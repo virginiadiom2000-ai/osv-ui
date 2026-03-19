@@ -4,8 +4,8 @@
 
 # osv-ui
 
-**Giao diện kiểm tra lỗ hổng CVE đẹp mắt, không cần cấu hình cho các dự án npm và Python.**  
-Một câu lệnh. Không cần đăng ký. Không cần API key. Mở ngay trên trình duyệt.
+**Một Dashboard CVE đẹp mắt, không cần cấu hình cho các dự án npm, Python, Go và Rust.**  
+Một câu lệnh. Không cần đăng ký. Không cần API key. **Chạy 100% locally — code của bạn không bao giờ rời khỏi máy.**
 
 [![npm version](https://img.shields.io/npm/v/osv-ui?color=red&label=npm)](https://www.npmjs.com/package/osv-ui)
 [![npm downloads](https://img.shields.io/npm/dm/osv-ui?color=orange)](https://www.npmjs.com/package/osv-ui)
@@ -44,10 +44,10 @@ npx osv-ui
 
 ### Tại sao nên thử dùng?
 
-- **Zero-config**: Không cần cài đặt, không cần tạo tài khoản hay API key.
-- **An toàn & Bảo mật**: Chạy 100% tại local, không gửi source code lên OSV.dev (Google) để đối chiếu. Source code của dự án được bảo vệ tuyệt đối.
-- **Trực quan & Nhanh chóng**: Hiển thị Risk Score, biểu đồ lỗ hổng và hướng dẫn nâng cấp (Safe Version) chi tiết trong vài giây.
-- **Hỗ trợ đa nền tảng**: Hoạt động tốt với cả dự án Node.js (npm) và Python.
+- **Không cấu hình**: Không cần cài đặt phức tạp, không cần tạo tài khoản hay API Key.
+- **Quyền riêng tư là trên hết**: Việc phân tích được thực hiện 100% trên máy của bạn.
+- **Nhanh & Trực quan**: Hiển thị điểm rủi ro, biểu đồ lỗ hổng và hướng dẫn nâng cấp chi tiết trong vài giây.
+- **Đa nền tảng**: Hỗ trợ sẵn cho hệ sinh thái Node.js (npm), Python, Go và Rust.
 
 ---
 
@@ -221,10 +221,10 @@ Mọi đóng góp đều được trân trọng. Nếu bạn muốn phát triể
 Dự án này được xây dựng bởi cộng đồng. Chào đón mọi cấp độ kỹ năng.
 
 **Các issue phù hợp cho người mới bắt đầu:**
-- Thêm bộ parse cho Go hoặc Rust (làm theo mẫu trong `src/parsers.js`)
-- Cải thiện các trường hợp đặc biệt cho bộ parse Python
+- Thêm bộ parse cho Java/Maven (`pom.xml`) — làm theo mẫu trong `src/parsers.js`
 - Thêm chế độ tối (dark mode) cho CSS của dashboard
 - Viết unit test cho các bộ parse
+- Cải thiện các trường hợp đặc biệt cho bộ parse Python
 
 ```bash
 # Clone và chạy local

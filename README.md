@@ -4,8 +4,8 @@
 
 # osv-ui
 
-**A beautiful, zero-config CVE dashboard for npm and Python projects.**  
-One command. No signup. No API key. Opens in your browser instantly.
+**A beautiful, zero-config visual CVE dashboard for npm, Python, Go, and Rust projects.**  
+One command. No signup. No API key. **Runs 100% locally — your code never leaves your machine.**
 
 [![npm version](https://img.shields.io/npm/v/osv-ui?color=red&label=npm)](https://www.npmjs.com/package/osv-ui)
 [![npm downloads](https://img.shields.io/npm/dm/osv-ui?color=orange)](https://www.npmjs.com/package/osv-ui)
@@ -45,9 +45,9 @@ npx osv-ui
 ### Why give it a try?
 
 - **Zero-config**: No complex setup, no signup, no API key required.
-- **Privacy & Security**: Runs 100% locally. It **never** sends your project's source code to OSV.dev (Google) for matching.
+- **Privacy First**: Analysis is done 100% on your machine.
 - **Fast & Visual**: Real-time Risk Scores, vulnerability charts, and clear upgrade guides in seconds.
-- **Multi-platform**: Built-in support for both Node.js (npm) and Python ecosystems.
+- **Multi-platform**: Native support for Node.js (npm), Python, Go, and Rust.
 
 ---
 
@@ -220,11 +220,11 @@ All contributions are welcome. If you want to work on something, open an issue f
 
 This project is built by the community. All skill levels welcome.
 
-**Good first issues** (no deep knowledge required):
-- Add Go or Rust manifest parser (follow the pattern in `src/parsers.js`)
-- Improve Python parser edge cases
+**Good first issues:**
+- Add Java/Maven parser (`pom.xml`) — follow the pattern in `src/parsers.js`
 - Add dark mode to the dashboard CSS
 - Write unit tests for the parsers
+- Improve Python parser edge cases
 
 ```bash
 # Clone and run locally
