@@ -9,8 +9,6 @@
 
 [🇻🇳 Tiếng Việt](README.vi.md) · [🇺🇸 English](README.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md)
 
-[![Ko-fi でサポート](https://img.shields.io/badge/Ko--fi-Support%20me-orange?style=flat-square&logo=ko-fi)](https://ko-fi.com/P5P31W9W6A)
-
 [![npm version](https://img.shields.io/npm/v/osv-ui?color=red&label=npm)](https://www.npmjs.com/package/osv-ui)
 [![npm downloads](https://img.shields.io/npm/dm/osv-ui?color=orange)](https://www.npmjs.com/package/osv-ui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -57,7 +55,7 @@ npx osv-ui
 
 | | |
 |---|---|
-| 🟨 **npm** + 🐍 **Python** | `package-lock.json`、`requirements.txt`、`Pipfile.lock`、`poetry.lock`、`pyproject.toml` をスキャン |
+| 🟨 **npm** + 🐍 **Python** + 🔵 **Go** + 🦀 **Rust** | `package-lock.json`、`Pipfile.lock`、`poetry.lock`、`requirements.txt`、`go.sum`、`Cargo.lock` をスキャン |
 | 📡 **ライブ CVE データ** | [OSV.dev](https://osv.dev) を使用 — NVD、GitHub Advisory、PyPI Advisory から毎日更新。**API キー不要。** |
 | 🏢 **マルチサービス** | 1 つのコマンドでモノレポ全体をスキャン — フロントエンド、バックエンド、ワーカー、ML サービス |
 | 💊 **修正ガイド** | Dependabot スタイルのアップグレード表：現在のバージョン → 安全なバージョン + ワンクリックコピーコマンド |
@@ -81,7 +79,7 @@ npx osv-ui ./frontend ./api ./worker ./ml-service
 
 **現在のディレクトリ下のすべてのサービスを自動検出：**
 ```bash
-npx osv-ui --discover
+npx osv-ui -d
 ```
 
 **`package.json` のスクリプトに追加：**
@@ -96,7 +94,7 @@ npx osv-ui --discover
 
 **すべてのオプション：**
 ```
---discover      サポートされているマニフェストを含むサービスディレクトリを自動検索
+--discover, -d  サポートされているマニフェストを含むサービスディレクトリを自動検索
 --port=2003     カスタムポートを使用（デフォルト: 2003）
 --no-open       ブラウザを自動的に開かない
 --offline       OSV.dev への問い合わせをスキップ — マニフェストの解析のみ実行
@@ -110,6 +108,8 @@ npx osv-ui --discover
 |-----------|-------|
 | **npm** | `package-lock.json` (lockfileVersion 1, 2, 3) |
 | **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` |
+| **Go** | `go.sum` |
+| **Rust** | `Cargo.lock` |
 
 さらに多くのエコシステムを開発中 — [ロードマップ](#ロードマップ)をご覧ください。
 
@@ -121,8 +121,8 @@ npx osv-ui --discover
 プロジェクトファイル
     │
     ├─ package-lock.json   ──┐
-    ├─ requirements.txt    ──┤──► 解析器 (parser) ──► パッケージリスト
-    └─ Pipfile.lock        ──┘
+    ├─ Pipfile / poetry    ──┤──► 解析器 (parser) ──► パッケージリスト
+    ├─ go.sum / Cargo.lock ──┘
                                      │
                                      ▼
                              OSV.dev バッチ API (無料、キー不要)
@@ -203,8 +203,8 @@ audit:
 
 すべての貢献を歓迎します。機能開発を行いたい場合は、調整のためにまず Issue を開いてください。
 
-- [ ] **Go サポート** — `go.sum` / `go.mod` の解析
-- [ ] **Rust サポート** — `Cargo.lock` の解析
+- [x] **Go サポート** — `go.sum` / `go.mod` の解析
+- [x] **Rust サポート** — `Cargo.lock` の解析
 - [ ] **Java / Maven** — `pom.xml` の解析
 - [ ] **レポートのエクスポート** — HTML / PDF / JSON として保存
 - [ ] **GitHub Actions** — PR に CVE 差分コメントを投稿
@@ -253,6 +253,8 @@ node bin/cli.js ./backend ./frontend
 
 osv-ui はあなたのプロジェクトで本物の CVE を見つけましたか？  
 ⭐ を付けることで、他の開発者がこのツールを見つけやすくなります。
+
+[![Sponsor this project](https://img.shields.io/badge/Sponsor-this%20project-lightgrey?style=flat-square&logo=ko-fi)](https://ko-fi.com/P5P31W9W6A)
 
 **[Twitter で共有](https://twitter.com/intent/tweet?text=Just%20found%20osv-ui%20%E2%80%94%20a%20beautiful%20one-command%20CVE%20dashboard%20for%20npm%20%26%20Python.%20Free%2C%20no%20signup%3A%20npx%20osv-ui%20%F0%9F%94%A5&url=https://github.com/toan203/osv-ui)** · **[Reddit に投稿](https://reddit.com/submit?url=https://github.com/toan203/osv-ui&title=osv-ui%20%E2%80%94%20visual%20CVE%20dashboard%20for%20npm%20%26%20Python%2C%20one%20command%2C%20no%20signup)**
 

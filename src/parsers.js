@@ -152,6 +152,93 @@ function parsePyproject(dir) {
   return packages;
 }
 
+// ── Go: go.mod & go.sum ──────────────────────────────────────────────────────
+function parseGo(dir) {
+  const sumPath = join(dir, 'go.sum');
+  const modPath = join(dir, 'go.mod');
+  if (!existsSync(sumPath)) return null;
+
+  const sumContent = readFileSync(sumPath, 'utf8');
+  const modContent = existsSync(modPath) ? readFileSync(modPath, 'utf8') : '';
+
+  const packages = [];
+  const seen = new Set();
+  
+  // Parse go.sum
+  // format: <module> <version>[/go.mod] <hash>
+  const lines = sumContent.split('\n');
+  for (let line of lines) {
+    line = line.trim();
+    if (!line) continue;
+    const parts = line.split(/\s+/);
+    if (parts.length < 2) continue;
+    
+    const name = parts[0];
+    let version = parts[1];
+    if (version.endsWith('/go.mod')) continue; // skip go.mod entries in go.sum
+
+    const key = `${name}@${version}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    // Is it direct? check go.mod
+    const isDirect = modContent.includes(`\t${name} `) || modContent.includes(` ${name} `);
+
+    packages.push({
+      name,
+      version,
+      ecosystem: 'Go',
+      isDirect,
+      dev: false,
+      registry: 'https://pkg.go.dev/' + name,
+    });
+  }
+  return packages;
+}
+
+// ── Rust: Cargo.lock ─────────────────────────────────────────────────────────
+function parseCargoLock(dir) {
+  const lockPath = join(dir, 'Cargo.lock');
+  const tomlPath = join(dir, 'Cargo.toml');
+  if (!existsSync(lockPath)) return null;
+
+  const content = readFileSync(lockPath, 'utf8');
+  const tomlContent = existsSync(tomlPath) ? readFileSync(tomlPath, 'utf8') : '';
+  const packages = [];
+  
+  // Basic Cargo.toml parsing for direct dependencies
+  const directDeps = new Set();
+  if (tomlContent) {
+    const depSection = tomlContent.split(/\[(?:dev-)?dependencies\]/);
+    depSection.slice(1).forEach(section => {
+      const lines = section.split('\n');
+      for (const line of lines) {
+        if (line.startsWith('[')) break;
+        const match = line.match(/^\s*([A-Za-z0-9_\-]+)\s*=/);
+        if (match) directDeps.add(match[1]);
+      }
+    });
+  }
+
+  // Parse [[package]] blocks
+  const blocks = content.split(/\[\[package\]\]/g).slice(1);
+  for (const block of blocks) {
+    const name    = block.match(/^name\s*=\s*"([^"]+)"/m)?.[1];
+    const version = block.match(/^version\s*=\s*"([^"]+)"/m)?.[1];
+    if (!name || !version) continue;
+    
+    packages.push({
+      name,
+      version,
+      ecosystem: 'crates.io',
+      isDirect: directDeps.has(name),
+      dev: false,
+      registry: 'https://crates.io/crates/' + name,
+    });
+  }
+  return packages;
+}
+
 // ── Main parser: detect ecosystem ─────────────────────────────────────────────
 export function parseManifests(dir) {
   const results = [];
@@ -159,6 +246,34 @@ export function parseManifests(dir) {
   // npm
   const npm = parseNpm(dir);
   if (npm) results.push({ type: 'npm', ...npm });
+
+  // Go
+  const goPackages = parseGo(dir);
+  if (goPackages && goPackages.length > 0) {
+    results.push({
+      type: 'go',
+      name: 'go-project',
+      version: '',
+      ecosystem: 'Go',
+      source: 'go.sum',
+      packages: goPackages,
+      directCount: goPackages.filter(p => p.isDirect).length
+    });
+  }
+
+  // Rust
+  const rustPackages = parseCargoLock(dir);
+  if (rustPackages && rustPackages.length > 0) {
+    results.push({
+      type: 'rust',
+      name: 'rust-project',
+      version: '',
+      ecosystem: 'crates.io',
+      source: 'Cargo.lock',
+      packages: rustPackages,
+      directCount: rustPackages.filter(p => p.isDirect).length
+    });
+  }
 
   // Python (try all, prefer lock files over requirements.txt)
   const pipfile  = parsePipfileLock(dir);

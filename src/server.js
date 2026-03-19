@@ -14,6 +14,25 @@ export function createServer(payload, port) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+/**
+ * Simple semver-ish version comparison
+ * Returns 1 if v1 > v2, -1 if v1 < v2, 0 if equal
+ */
+function compareVersions(v1, v2) {
+  if (!v1) return -1;
+  if (!v2) return 1;
+  const p1 = String(v1).replace(/^v/, '').split(/[^0-9]/).map(Number);
+  const p2 = String(v2).replace(/^v/, '').split(/[^0-9]/).map(Number);
+  const len = Math.max(p1.length, p2.length);
+  for (let i = 0; i < len; i++) {
+    const n1 = p1[i] || 0;
+    const n2 = p2[i] || 0;
+    if (n1 > n2) return 1;
+    if (n2 > n1) return -1;
+  }
+  return 0;
+}
+
 function esc(s) {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
@@ -40,7 +59,13 @@ function buildDashboard({ services, scannedAt, noOsv }) {
   // Build service nav
   const serviceNav = services.map((svc, i) => {
     const dot = svc.severity.critical > 0 ? '#e53e3e' : svc.vulns.length > 0 ? '#dd6b20' : '#38a169';
-    const ecoIcons = svc.ecosystems.map(e => e === 'npm' ? '🟨' : e === 'PyPI' ? '🐍' : '📦').join('');
+    const ecoIcons = svc.ecosystems.map(e => {
+      if (e === 'npm') return '🟨';
+      if (e === 'PyPI') return '🐍';
+      if (e === 'Go') return '🔵';
+      if (e === 'crates.io') return '🦀';
+      return '📦';
+    }).join('');
     return `<div class="nav-item ${i === 0 ? 'active' : ''}" onclick="showService(${i}, this)" data-svc="${i}">
       <span style="width:7px;height:7px;border-radius:50%;background:${dot};display:inline-block;flex-shrink:0"></span>
       <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(svc.name)}</span>
@@ -169,7 +194,11 @@ tr:hover td{background:#fafbfc}
 .detail-item .val{font-size:12px;color:var(--text)}
 tr.clickable{cursor:pointer}
 tr.clickable:hover td{background:#f0f4f8}
-.kofi-button{margin-top:8px;transition:all .2s ease;opacity:.7;display:inline-block;vertical-align:middle}.kofi-button:hover{opacity:1;transform:scale(1.02)}.kofi-button img{height:20px!important;border-radius:4px;display:block}
+.kofi-button{margin-top:12px;display:inline-block;vertical-align:middle}
+.kofi-link{display:flex;align-items:center;gap:3px;padding:1px 5px;border:1px solid #e2e8f0;border-radius:4px;color:#a0aec0;font-size:8.5px;font-weight:600;transition:all .2s ease;text-decoration:none!important}
+.kofi-link:hover{background:#ed8936;border-color:#ed8936;color:#fff}
+.kofi-link img{height:10px!important;opacity:0.5;filter:grayscale(1)}
+.kofi-link:hover img{opacity:1;filter:none}
 </style>
 </head>
 <body>
@@ -185,15 +214,6 @@ tr.clickable:hover td{background:#f0f4f8}
 
 <div class="body">
   <nav class="sidebar">
-    <div style="padding:12px 14px;border-bottom:1px solid var(--border);font-size:10px;color:var(--muted);line-height:1.5;background:#f7fafc;flex-shrink:0">
-      <div style="font-weight:600;color:var(--text);margin-bottom:2px">Developer Info</div>
-      <div>👤 Toan Nguyen</div>
-      <div>✉️ <a href="mailto:mitodng@gmail.com" style="color:var(--muted)">mitodng@gmail.com</a></div>
-      <div>💻 <a href="https://github.com/toan203/osv-ui" target="_blank" rel="noopener" style="color:var(--muted)">toan203/osv-ui</a></div>
-      <div class="kofi-button">
-        <a href='https://ko-fi.com/P5P31W9W6A' target='_blank'><img src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-      </div>
-    </div>
     <div class="sidebar-top">
       <div class="label">Global summary</div>
       <div class="global-stats">
@@ -206,6 +226,17 @@ tr.clickable:hover td{background:#f0f4f8}
     <div class="sidebar-nav">
       <div class="sidebar-section">Services</div>
       ${serviceNav}
+    </div>
+    <div style="padding:12px 14px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);line-height:1.5;background:#f7fafc;flex-shrink:0">
+      <div style="font-weight:600;color:var(--text);margin-bottom:2px">Developer Info</div>
+      <div>👤 Toan Nguyen</div>
+      <div>💻 <a href="https://github.com/toan203/osv-ui" target="_blank" rel="noopener" style="color:var(--muted)">toan203/osv-ui</a></div>
+      <div class="kofi-button">
+        <a href="https://ko-fi.com/P5P31W9W6A" target="_blank" class="kofi-link">
+          <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi" />
+          Sponsor this project
+        </a>
+      </div>
     </div>
   </nav>
 
@@ -359,13 +390,25 @@ function buildServicePanel(svc, i) {
 
   // Ecosystem badges
   const ecoBadges = svc.ecosystems.map(e => {
-    const [bg, fg, border] = e === 'npm'
-      ? ['#fffef0','#7d6608','#f6e05e']
-      : ['#f0f9ff','#1e4e79','#bee3f8'];
-    return `<span class="eco-badge" style="background:${bg};color:${fg};border-color:${border}">${e === 'npm' ? '🟨 npm' : '🐍 Python'}</span>`;
+    let [bg, fg, border, label] = ['#f7fafc','#4a5568','#e2e8f0', e];
+    if (e === 'npm') { bg='#fffef0'; fg='#7d6608'; border='#f6e05e'; label='🟨 npm'; }
+    else if (e === 'PyPI') { bg='#f0f9ff'; fg='#1e4e79'; border='#bee3f8'; label='🐍 Python'; }
+    else if (e === 'Go') { bg='#ebf8ff'; fg='#2c5282'; border='#90cdf4'; label='🔵 Go'; }
+    else if (e === 'crates.io') { bg='#fff5f5'; fg='#9b2c2c'; border='#feb2b2'; label='🦀 Rust'; }
+    return `<span class="eco-badge" style="background:${bg};color:${fg};border-color:${border}">${label}</span>`;
   }).join('');
 
   const manifestInfo = svc.manifests.map(m => `<code>${m.source}</code>`).join(' + ');
+
+  // Calculate highest fix version per package for hints in Vuln tab
+  const highestFixes = {};
+  svc.vulns.forEach(v => {
+    if (v.fixedIn) {
+      if (!highestFixes[v.packageName] || compareVersions(v.fixedIn, highestFixes[v.packageName]) > 0) {
+        highestFixes[v.packageName] = v.fixedIn;
+      }
+    }
+  });
 
   // Vulnerabilities tab
   const vulnRows = svc.vulns.map((v, vi) => {
@@ -391,7 +434,12 @@ function buildServicePanel(svc, i) {
       </td>
       <td><code>${esc(v.affectedRange)}</code></td>
       <td>${v.isDirect ? '<span class="pkg-tag" style="background:#e6fffa;color:#276749">direct</span>' : '<span class="pkg-tag" style="background:#edf2f7;color:#718096">transitive</span>'}</td>
-      <td>${v.fixedIn ? `<span style="color:#38a169;font-weight:600">✅ ${esc(v.fixedIn)}</span>` : '<span style="color:#718096">—</span>'}</td>
+      <td>
+        ${v.fixedIn ? `<div style="color:#38a169;font-weight:600">✅ ${esc(v.fixedIn)}</div>
+          ${(highestFixes[v.packageName] && v.fixedIn !== highestFixes[v.packageName] && compareVersions(highestFixes[v.packageName], v.fixedIn) > 0)
+            ? `<div style="font-size:9px;color:#718096;margin-top:2px;line-height:1.1">💡 Installing <strong>${esc(highestFixes[v.packageName])}</strong> will also fix this</div>`
+            : ''}` : '<span style="color:#718096">—</span>'}
+      </td>
     </tr>
     <tr class="detail-row" id="detail-${rowId}">
       <td colspan="6">
@@ -411,15 +459,46 @@ function buildServicePanel(svc, i) {
     </tr>`;
   }).join('');
 
-  // Dependabot-style fix recommendations
-  const fixable = svc.vulns.filter(v => v.fixedIn && v.isDirect);
-  const fixRows = fixable.map(v => `
+  // Dependabot-style fix recommendations: Group by package, show highest fix version
+  const fixGroups = {};
+  svc.vulns.filter(v => v.fixedIn && v.isDirect).forEach(v => {
+    if (!fixGroups[v.packageName]) {
+      fixGroups[v.packageName] = {
+        package: v.packageName,
+        current: v.packageVersion,
+        fixedIn: v.fixedIn,
+        fixCommand: v.fixCommand,
+        severity: v.severity,
+        cveCount: 1
+      };
+    } else {
+      const g = fixGroups[v.packageName];
+      g.cveCount++;
+      // Update fixedIn if this one is higher
+      if (compareVersions(v.fixedIn, g.fixedIn) > 0) {
+        g.fixedIn = v.fixedIn;
+        g.fixCommand = v.fixCommand;
+      }
+      // Update severity badge if this one is worse
+      if (SEV_ORDER[v.severity] < SEV_ORDER[g.severity]) {
+        g.severity = v.severity;
+      }
+    }
+  });
+
+  const uniqueFixes = Object.values(fixGroups).sort((a, b) => SEV_ORDER[a.severity] - SEV_ORDER[b.severity]);
+  const fixRows = uniqueFixes.map(g => `
     <tr>
-      <td>${sevBadge(v.severity)}</td>
-      <td><strong>${esc(v.packageName)}</strong></td>
-      <td style="color:#c53030"><code>${esc(v.packageVersion)}</code></td>
-      <td style="color:#38a169"><code>${esc(v.fixedIn)}</code></td>
-      <td><div class="fix-cmd" style="margin:0">${esc(v.fixCommand || '')}<button onclick="copyCmd(this,'${esc(v.fixCommand || '')}')">Copy</button></div></td>
+      <td>${sevBadge(g.severity)}</td>
+      <td>
+        <strong>${esc(g.package)}</strong>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">
+          fixes ${g.cveCount} CVE${g.cveCount > 1 ? 's' : ''}
+        </div>
+      </td>
+      <td style="color:#c53030"><code>${esc(g.current)}</code></td>
+      <td style="color:#38a169"><code>${esc(g.fixedIn)}</code></td>
+      <td><div class="fix-cmd" style="margin:0">${esc(g.fixCommand || '')}<button onclick="copyCmd(this,'${esc(g.fixCommand || '')}')">Copy</button></div></td>
     </tr>`).join('');
 
   // Packages tab
@@ -491,7 +570,7 @@ function buildServicePanel(svc, i) {
 
   <div class="tabs">
     <div class="tab active" data-tab="vulns" onclick="showTab(${i},'vulns')">🚨 Vulnerabilities (${svc.vulns.length})</div>
-    <div class="tab" data-tab="fixes" onclick="showTab(${i},'fixes')">💊 Upgrade guide (${fixable.length} direct)</div>
+    <div class="tab" data-tab="fixes" onclick="showTab(${i},'fixes')">💊 Upgrade guide (${uniqueFixes.length} direct)</div>
     <div class="tab" data-tab="packages" onclick="showTab(${i},'packages')">📦 Packages (${svc.totalPackages})</div>
   </div>
 
@@ -516,10 +595,10 @@ function buildServicePanel(svc, i) {
 
   <!-- FIX GUIDE TAB (Dependabot-style) -->
   <div class="tab-content" data-tab="fixes">
-    ${fixable.length === 0
+    ${uniqueFixes.length === 0
       ? `<div class="tbl-wrap"><div class="empty"><div class="icon">${svc.vulns.length === 0 ? '✅' : '⚠'}</div><div style="font-size:14px;font-weight:600">${svc.vulns.length === 0 ? 'No vulnerabilities!' : 'No auto-fixable vulnerabilities found'}</div><div style="color:#718096;font-size:12px;margin-top:4px">${svc.vulns.length > 0 ? 'Transitive deps may need upstream fixes.' : ''}</div></div></div>`
       : `<div class="upgrade-card">
-          <div class="uc-header">💊 ${fixable.length} direct ${fixable.length === 1 ? 'package' : 'packages'} can be upgraded to fix CVEs</div>
+          <div class="uc-header">💊 ${uniqueFixes.length} direct ${uniqueFixes.length === 1 ? 'package' : 'packages'} can be upgraded to fix CVEs</div>
           <div style="overflow-x:auto">
           <table>
             <thead><tr><th>Severity</th><th>Package</th><th>Current</th><th>Safe version</th><th>Command</th></tr></thead>

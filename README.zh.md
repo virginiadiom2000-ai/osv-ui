@@ -9,8 +9,6 @@
 
 [🇻🇳 Tiếng Việt](README.vi.md) · [🇺🇸 English](README.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md)
 
-[![在 Ko-fi 上支持我](https://img.shields.io/badge/Ko--fi-Support%20me-orange?style=flat-square&logo=ko-fi)](https://ko-fi.com/P5P31W9W6A)
-
 [![npm version](https://img.shields.io/npm/v/osv-ui?color=red&label=npm)](https://www.npmjs.com/package/osv-ui)
 [![npm downloads](https://img.shields.io/npm/dm/osv-ui?color=orange)](https://www.npmjs.com/package/osv-ui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -57,7 +55,7 @@ npx osv-ui
 
 | | |
 |---|---|
-| 🟨 **npm** + 🐍 **Python** | 扫描 `package-lock.json`、`requirements.txt`、`Pipfile.lock`、`poetry.lock`、`pyproject.toml` |
+| 🟨 **npm** + 🐍 **Python** + 🔵 **Go** + 🦀 **Rust** | 扫描 `package-lock.json`、`Pipfile.lock`、`poetry.lock`、`requirements.txt`、`go.sum`、`Cargo.lock` |
 | 📡 **实时 CVE 数据** | 由 [OSV.dev](https://osv.dev) 提供支持 — 每天从 NVD、GitHub Advisory、PyPI Advisory 更新。**无需 API 密钥。** |
 | 🏢 **多服务扫描** | 一条命令扫描整个 monorepo — 前端、后端、workers、ML 服务 |
 | 💊 **修复指南** | Dependabot 风格的升级表：当前版本 → 安全版本 + 一键复制命令 |
@@ -81,7 +79,7 @@ npx osv-ui ./frontend ./api ./worker ./ml-service
 
 **自动发现当前目录下的所有服务：**
 ```bash
-npx osv-ui --discover
+npx osv-ui -d
 ```
 
 **添加到你的 `package.json` 脚本中：**
@@ -96,7 +94,7 @@ npx osv-ui --discover
 
 **所有选项：**
 ```
---discover      自动查找包含支持的清单文件的服务目录
+--discover, -d  自动查找包含支持的清单文件的服务目录
 --port=2003     使用自定义端口（默认：2003）
 --no-open       不自动打开浏览器
 --offline       跳过 OSV.dev 查询 — 仅解析清单文件
@@ -110,6 +108,8 @@ npx osv-ui --discover
 |-----------|-------|
 | **npm** | `package-lock.json` (lockfileVersion 1, 2, 3) |
 | **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` |
+| **Go** | `go.sum` |
+| **Rust** | `Cargo.lock` |
 
 更多生态系统即将推出 — 请参阅 [路线图](#路线图)。
 
@@ -121,8 +121,8 @@ npx osv-ui --discover
 项目文件
     │
     ├─ package-lock.json   ──┐
-    ├─ requirements.txt    ──┤──► 解析器 (parser) ──► 软件包列表
-    └─ Pipfile.lock        ──┘
+    ├─ Pipfile / poetry    ──┤──► 解析器 (parser) ──► 软件包列表
+    ├─ go.sum / Cargo.lock ──┘
                                      │
                                      ▼
                              OSV.dev 批量 API (免费，无需密钥)
@@ -203,8 +203,8 @@ audit:
 
 欢迎所有贡献。如果你想开发某个功能，请先开启一个 issue，以便我们进行协调。
 
-- [ ] **支持 Go** — 解析 `go.sum` / `go.mod`
-- [ ] **支持 Rust** — 解析 `Cargo.lock`
+- [x] **支持 Go** — 解析 `go.sum` / `go.mod`
+- [x] **支持 Rust** — 解析 `Cargo.lock`
 - [ ] **Java / Maven** — 解析 `pom.xml`
 - [ ] **导出报告** — 保存为 HTML / PDF / JSON
 - [ ] **GitHub Actions** — 在 PR 上发布 CVE 差异评论
@@ -253,6 +253,8 @@ node bin/cli.js ./backend ./frontend
 
 osv-ui 是否在你的项目中发现了真实的 CVE？  
 一颗 ⭐ 能帮助其他开发者发现这个工具。
+
+[![Sponsor this project](https://img.shields.io/badge/Sponsor-this%20project-lightgrey?style=flat-square&logo=ko-fi)](https://ko-fi.com/P5P31W9W6A)
 
 **[在 Twitter 分享](https://twitter.com/intent/tweet?text=Just%20found%20osv-ui%20%E2%80%94%20a%20beautiful%20one-command%20CVE%20dashboard%20for%20npm%20%26%20Python.%20Free%2C%20no%20signup%3A%20npx%20osv-ui%20%F0%9F%94%A5&url=https://github.com/toan203/osv-ui)** · **[在 Reddit 发布](https://reddit.com/submit?url=https://github.com/toan203/osv-ui&title=osv-ui%20%E2%80%94%20visual%20CVE%20dashboard%20for%20npm%20%26%20Python%2C%20one%20command%2C%20no%20signup)**
 

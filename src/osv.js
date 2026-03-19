@@ -93,6 +93,14 @@ export async function queryOSV(packages) {
 
   return results;
 }
+/**
+ * Check if a version string is considered "stable" for production use.
+ * Excludes alpha, beta, rc, canary, dev, next, pre-releases.
+ */
+function isStableVersion(ver) {
+  if (!ver) return false;
+  return !/alpha|beta|canary|rc|dev|next|pre|preview/i.test(ver);
+}
 
 function parseOsvVuln(v, pkg) {
   // Extract severity (CVSS)
@@ -129,7 +137,9 @@ function parseOsvVuln(v, pkg) {
         const fixed      = range.events?.find(e => e.fixed)?.fixed;
         if (introduced || fixed) {
           affectedRange = `>= ${introduced || '0'}${fixed ? `, < ${fixed}` : ''}`;
-          if (fixed) fixedIn = fixed;
+          if (fixed && isStableVersion(fixed)) {
+            fixedIn = fixed;
+          }
         }
       }
     }
@@ -155,6 +165,12 @@ function parseOsvVuln(v, pkg) {
       fixCommand = pkg.isDirect
         ? `pip install "${pkg.name}>=${fixedIn}"`
         : `pip install --upgrade ${pkg.name}`;
+    } else if (pkg.ecosystem === 'Go') {
+      fixCommand = pkg.isDirect
+        ? `go get ${pkg.name}@v${fixedIn.replace(/^v/, '')}`
+        : `go get ${pkg.name}@v${fixedIn.replace(/^v/, '')}`; // go get works for transitive too
+    } else if (pkg.ecosystem === 'crates.io') {
+      fixCommand = `cargo update -p ${pkg.name} --precise ${fixedIn}`;
     }
   }
 

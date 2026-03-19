@@ -10,9 +10,9 @@ const args = process.argv.slice(2);
 const portArg = args.find(a => a.startsWith('--port='));
 const PORT = portArg ? parseInt(portArg.split('=')[1]) : 2003;
 const noOpen = args.includes('--no-open');
-const discover = args.includes('--discover');
+const discover = args.includes('--discover') || args.includes('-d');
 const noOsv = args.includes('--offline');           // skip live OSV.dev lookup
-const paths = args.filter(a => !a.startsWith('--'));// positional = service dirs
+const paths = args.filter(a => !a.startsWith('-')); // positional = service dirs
 
 const log = (msg) => process.stdout.write(msg + '\n');
 const dim = (s) => `\x1b[90m${s}\x1b[0m`;
@@ -30,8 +30,8 @@ log('');
 // ── Discover services ────────────────────────────────────────────────────────
 function discoverDirs(root) {
   const hits = [];
-  const MANIFEST = ['package-lock.json', 'requirements.txt', 'Pipfile.lock', 'poetry.lock', 'pyproject.toml'];
-  const IGNORE = ['node_modules', '.git', '__pycache__', '.venv', 'venv', 'dist', '.next', 'build'];
+  const MANIFEST = ['package-lock.json', 'requirements.txt', 'Pipfile.lock', 'poetry.lock', 'pyproject.toml', 'go.sum', 'Cargo.lock'];
+  const IGNORE = ['node_modules', '.git', '__pycache__', '.venv', 'venv', 'dist', '.next', 'build', 'target'];
   function walk(dir, depth = 0) {
     if (depth > 3) return;
     let entries;
@@ -64,7 +64,7 @@ if (paths.length > 0) {
 }
 
 // ── Validate dirs ────────────────────────────────────────────────────────────
-const MANIFESTS = ['package-lock.json', 'requirements.txt', 'Pipfile.lock', 'poetry.lock', 'pyproject.toml'];
+const MANIFESTS = ['package-lock.json', 'requirements.txt', 'Pipfile.lock', 'poetry.lock', 'pyproject.toml', 'go.sum', 'Cargo.lock'];
 serviceDirs = serviceDirs.filter(dir => {
   const ok = existsSync(dir) && MANIFESTS.some(m => existsSync(join(dir, m)));
   if (!ok) log(yellow(`  ⚠ Skipping ${dir} — no supported manifest found`));
@@ -77,11 +77,13 @@ if (serviceDirs.length === 0) {
   log('  Supported manifests:');
   log(dim('    npm:    package-lock.json'));
   log(dim('    Python: requirements.txt · Pipfile.lock · poetry.lock · pyproject.toml'));
+  log(dim('    Go:     go.sum'));
+  log(dim('    Rust:   Cargo.lock'));
   log('');
   log('  Usage:');
   log(cyan('    npx osv-ui                          ') + dim('# current dir'));
   log(cyan('    npx osv-ui ./frontend ./api ./worker') + dim('# multi-service'));
-  log(cyan('    npx osv-ui --discover               ') + dim('# auto-detect'));
+  log(cyan('    npx osv-ui -d                       ') + dim('# auto-detect'));
   log('');
   process.exit(1);
 }

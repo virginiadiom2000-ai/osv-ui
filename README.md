@@ -13,11 +13,9 @@ One command. No signup. No API key. Opens in your browser instantly.
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D16-blue)](https://nodejs.org)
 
+[🇻🇳 Tiếng Việt](README.vi.md) · [🇺🇸 English](README.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md)
+
 </div>
-
-[[🇻🇳 Tiếng Việt](README.vi.md) · [🇺🇸 English](README.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md)]
-
-[![Support me on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-orange?style=flat-square&logo=ko-fi)](https://ko-fi.com/P5P31W9W6A)
 
 ---
 
@@ -57,7 +55,7 @@ npx osv-ui
 
 | | |
 |---|---|
-| 🟨 **npm** + 🐍 **Python** | Scans `package-lock.json`, `requirements.txt`, `Pipfile.lock`, `poetry.lock`, `pyproject.toml` |
+| 🟨 **npm** + 🐍 **Python** + 🔵 **Go** + 🦀 **Rust** | Scans `package-lock.json`, `Pipfile.lock`, `poetry.lock`, `requirements.txt`, `go.sum`, `Cargo.lock` |
 | 📡 **Live CVE data** | Powered by [OSV.dev](https://osv.dev) — updated daily from NVD, GitHub Advisory, PyPI Advisory. **No API key.** |
 | 🏢 **Multi-service** | Scan your entire monorepo in one command — frontend, backend, workers, ML services |
 | 💊 **Fix guide** | Dependabot-style upgrade table: current version → safe version + one-click copy command |
@@ -81,7 +79,7 @@ npx osv-ui ./frontend ./api ./worker ./ml-service
 
 **Auto-discover all services under the current directory:**
 ```bash
-npx osv-ui --discover
+npx osv-ui -d
 ```
 
 **Add to your `package.json` scripts:**
@@ -96,7 +94,7 @@ npx osv-ui --discover
 
 **All options:**
 ```
---discover      Auto-find service dirs that contain a supported manifest
+--discover, -d  Auto-find service dirs that contain a supported manifest
 --port=2003     Use a custom port (default: 2003)
 --no-open       Don't auto-open the browser
 --offline       Skip OSV.dev lookup — parse manifests only
@@ -110,6 +108,8 @@ npx osv-ui --discover
 |-----------|-------|
 | **npm** | `package-lock.json` (lockfileVersion 1, 2, 3) |
 | **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` |
+| **Go** | `go.sum` |
+| **Rust** | `Cargo.lock` |
 
 More ecosystems coming — see [Roadmap](#roadmap).
 
@@ -121,8 +121,8 @@ More ecosystems coming — see [Roadmap](#roadmap).
 Your project files
     │
     ├─ package-lock.json   ──┐
-    ├─ requirements.txt    ──┤──► parser ──► package list
-    └─ Pipfile.lock        ──┘
+    ├─ Pipfile / poetry    ──┤──► parser ──► package list
+    ├─ go.sum / Cargo.lock ──┘
                                     │
                                     ▼
                              OSV.dev batch API  (free, no key)
@@ -203,8 +203,8 @@ audit:
 
 All contributions are welcome. If you want to work on something, open an issue first so we can coordinate.
 
-- [ ] **Go support** — parse `go.sum` / `go.mod`
-- [ ] **Rust support** — parse `Cargo.lock`
+- [x] **Go support** — parse `go.sum` / `go.mod`
+- [x] **Rust support** — parse `Cargo.lock`
 - [ ] **Java / Maven** — parse `pom.xml`
 - [ ] **Export report** — save as HTML / PDF / JSON
 - [ ] **GitHub Actions** — post a CVE diff comment on PRs
@@ -253,6 +253,8 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for code style and PR process.
 
 Did osv-ui catch a real CVE in your project?  
 A ⭐ helps other developers find this tool.
+
+[![Sponsor this project](https://img.shields.io/badge/Sponsor-this%20project-lightgrey?style=flat-square&logo=ko-fi)](https://ko-fi.com/P5P31W9W6A)
 
 **[Share on Twitter](https://twitter.com/intent/tweet?text=Just%20found%20osv-ui%20%E2%80%94%20a%20beautiful%20one-command%20CVE%20dashboard%20for%20npm%20%26%20Python.%20Free%2C%20no%20signup%3A%20npx%20osv-ui%20%F0%9F%94%A5&url=https://github.com/toan203/osv-ui)** · **[Post on Reddit](https://reddit.com/submit?url=https://github.com/toan203/osv-ui&title=osv-ui%20%E2%80%94%20visual%20CVE%20dashboard%20for%20npm%20%26%20Python%2C%20one%20command%2C%20no%20signup)**
 

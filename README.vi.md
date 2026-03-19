@@ -7,15 +7,13 @@
 **Giao diện kiểm tra lỗ hổng CVE đẹp mắt, không cần cấu hình cho các dự án npm và Python.**  
 Một câu lệnh. Không cần đăng ký. Không cần API key. Mở ngay trên trình duyệt.
 
-[🇻🇳 Tiếng Việt](README.vi.md) · [🇺🇸 English](README.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md)
-
-[![Ủng hộ mình qua Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-orange?style=flat-square&logo=ko-fi)](https://ko-fi.com/P5P31W9W6A)
-
 [![npm version](https://img.shields.io/npm/v/osv-ui?color=red&label=npm)](https://www.npmjs.com/package/osv-ui)
 [![npm downloads](https://img.shields.io/npm/dm/osv-ui?color=orange)](https://www.npmjs.com/package/osv-ui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D16-blue)](https://nodejs.org)
+
+[🇻🇳 Tiếng Việt](README.vi.md) · [🇺🇸 English](README.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md)
 
 </div>
 
@@ -57,7 +55,7 @@ npx osv-ui
 
 | | |
 |---|---|
-| 🟨 **npm** + 🐍 **Python** | Quét `package-lock.json`, `requirements.txt`, `Pipfile.lock`, `poetry.lock`, `pyproject.toml` |
+| 🟨 **npm** + 🐍 **Python** + 🔵 **Go** + 🦀 **Rust** | Quét `package-lock.json`, `Pipfile.lock`, `poetry.lock`, `requirements.txt`, `go.sum`, `Cargo.lock` |
 | 📡 **Dữ liệu CVE trực tiếp** | Cung cấp bởi [OSV.dev](https://osv.dev) — cập nhật hàng ngày từ NVD, GitHub Advisory, PyPI Advisory. **Không cần API key.** |
 | 🏢 **Đa dịch vụ (Multi-service)** | Quét toàn bộ monorepo chỉ với một câu lệnh — frontend, backend, workers, ML services |
 | 💊 **Hướng dẫn Fix** | Bảng nâng cấp kiểu Dependabot: phiên bản hiện tại → phiên bản an toàn + lệnh copy 1-click |
@@ -81,7 +79,7 @@ npx osv-ui ./frontend ./api ./worker ./ml-service
 
 **Tự động tìm kiếm tất cả dịch vụ trong thư mục hiện tại:**
 ```bash
-npx osv-ui --discover
+npx osv-ui -d
 ```
 
 **Thêm vào scripts của `package.json`:**
@@ -96,7 +94,7 @@ npx osv-ui --discover
 
 **Các tùy chọn:**
 ```
---discover      Tự động tìm các thư mục chứa file manifest được hỗ trợ
+--discover, -d  Tự động tìm các thư mục chứa file manifest được hỗ trợ
 --port=2003     Sử dụng port tùy chỉnh (mặc định: 2003)
 --no-open       Không tự động mở trình duyệt
 --offline       Bỏ qua việc truy vấn OSV.dev — chỉ parse các file manifest
@@ -110,6 +108,8 @@ npx osv-ui --discover
 |-----------|-------|
 | **npm** | `package-lock.json` (lockfileVersion 1, 2, 3) |
 | **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` |
+| **Go** | `go.sum` |
+| **Rust** | `Cargo.lock` |
 
 Nhiều hệ sinh thái khác đang được phát triển — xem [Lộ trình](#lộ-trình).
 
@@ -121,8 +121,8 @@ Nhiều hệ sinh thái khác đang được phát triển — xem [Lộ trình]
 File dự án của bạn
     │
     ├─ package-lock.json   ──┐
-    ├─ requirements.txt    ──┤──► bộ phân tích (parser) ──► danh sách package
-    └─ Pipfile.lock        ──┘
+    ├─ Pipfile / poetry    ──┤──► parser ──► danh sách package
+    ├─ go.sum / Cargo.lock ──┘
                                      │
                                      ▼
                              OSV.dev batch API  (miễn phí, không cần key)
@@ -203,8 +203,8 @@ audit:
 
 Mọi đóng góp đều được trân trọng. Nếu bạn muốn phát triển tính năng mới, hãy tạo issue trước để chúng ta cùng thảo luận.
 
-- [ ] **Hỗ trợ Go** — parse `go.sum` / `go.mod`
-- [ ] **Hỗ trợ Rust** — parse `Cargo.lock`
+- [x] **Hỗ trợ Go** — parse `go.sum` / `go.mod`
+- [x] **Hỗ trợ Rust** — parse `Cargo.lock`
 - [ ] **Java / Maven** — parse `pom.xml`
 - [ ] **Xuất báo cáo** — lưu dưới dạng HTML / PDF / JSON
 - [ ] **GitHub Actions** — đăng comment so sánh CVE trên PRs
@@ -253,6 +253,8 @@ Vui lòng đọc [CONTRIBUTING.md](CONTRIBUTING.md) để biết thêm về phon
 
 Dự án của bạn đã tránh được CVE nhờ osv-ui?  
 Một ⭐ của bạn giúp các lập trình viên khác tìm thấy công cụ này dễ dàng hơn.
+
+[![Sponsor this project](https://img.shields.io/badge/Sponsor-this%20project-lightgrey?style=flat-square&logo=ko-fi)](https://ko-fi.com/P5P31W9W6A)
 
 **[Chia sẻ trên Twitter](https://twitter.com/intent/tweet?text=Just%20found%20osv-ui%20%E2%80%94%20a%20beautiful%20one-command%20CVE%20dashboard%20for%20npm%20%26%20Python.%20Free%2C%20no%20signup%3A%20npx%20osv-ui%20%F0%9F%94%A5&url=https://github.com/toan203/osv-ui)** · **[Đăng trên Reddit](https://reddit.com/submit?url=https://github.com/toan203/osv-ui&title=osv-ui%20%E2%80%94%20visual%20CVE%20dashboard%20for%20npm%20%26%20Python%2C%20one%20command%2C%20no%20signup)**
 
