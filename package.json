@@ -1,0 +1,45 @@
+{
+  "name": "osv-ui",
+  "version": "1.0.6",
+  "description": "A beautiful, zero-config visual CVE dashboard for npm and Python projects. Scan multiple services locally, view real-time vulnerability data from Google's OSV.dev, and get direct upgrade instructions. Repo: https://github.com/toan203/osv-ui",
+  "type": "module",
+  "bin": {
+    "osv-ui": "bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js"
+  },
+  "keywords": [
+    "npm-audit",
+    "pip-audit",
+    "cve",
+    "security-audit",
+    "vulnerability-scanner",
+    "osv-scanner",
+    "dashboard",
+    "osv",
+    "python",
+    "monorepo",
+    "audit-ui"
+  ],
+  "author": "Toan Nguyen <mitodng@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/toan203/osv-ui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toan203/osv-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/toan203/osv-ui/issues"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "open": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
