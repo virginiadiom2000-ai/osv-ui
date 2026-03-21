@@ -1,15 +1,64 @@
 import express from 'express';
+import http from 'http';
+import { execSync } from 'child_process';
+
+function checkIfOsvUi(port) {
+  return new Promise(resolve => {
+    const req = http.request({ host: '127.0.0.1', port, method: 'GET', path: '/api/data', timeout: 300 }, res => {
+      resolve(res.headers['x-app'] === 'osv-ui');
+    });
+    req.on('error', () => resolve(false));
+    req.on('timeout', () => { req.destroy(); resolve(false); });
+    req.end();
+  });
+}
+
+function killPort(port) {
+  try {
+    if (process.platform === 'win32') {
+      const out = execSync(`netstat -ano | findstr :${port}`).toString();
+      const pids = out.split('\n')
+        .map(line => line.trim().split(/\s+/).pop())
+        .filter(pid => pid && /^\d+$/.test(pid));
+      [...new Set(pids)].forEach(pid => {
+        try { execSync(`taskkill /F /PID ${pid}`); } catch {}
+      });
+    } else {
+      const out = execSync(`lsof -t -i :${port}`).toString().trim();
+      if (out) {
+        out.split('\n').forEach(pid => {
+          try { execSync(`kill -9 ${pid}`); } catch {}
+        });
+      }
+    }
+  } catch (e) {}
+}
 
 export function createServer(payload, port, version) {
   return new Promise((resolve, reject) => {
-    const app = express();
-    app.get('/', (_, res) => { res.setHeader('Content-Type', 'text/html'); res.send(buildDashboard(payload, version)); });
-    app.get('/api/data', (_, res) => res.json(payload));
-    const server = app.listen(port, '127.0.0.1', () => resolve(server));
-    server.on('error', e => {
-      if (e.code === 'EADDRINUSE') console.error(`Port ${port} in use — try --port=4322`);
-      reject(e);
-    });
+    const start = async (currentPort) => {
+      const app = express();
+      app.use((_, res, next) => { res.setHeader('X-App', 'osv-ui'); next(); });
+      app.get('/', (_, res) => { res.setHeader('Content-Type', 'text/html'); res.send(buildDashboard(payload, version)); });
+      app.get('/api/data', (_, res) => res.json(payload));
+      const server = app.listen(currentPort, '127.0.0.1', () => resolve({ server, port: currentPort }));
+      server.on('error', async e => {
+        if (e.code === 'EADDRINUSE') {
+          const isOurs = await checkIfOsvUi(currentPort);
+          if (isOurs) {
+            console.log(`  ${currentPort} is busy (osv-ui), auto-recovering...`);
+            killPort(currentPort);
+            setTimeout(() => start(currentPort), 500);
+          } else {
+            console.log(`  ${currentPort} is busy (other service), trying ${currentPort + 1}...`);
+            start(currentPort + 1);
+          }
+        } else {
+          reject(e);
+        }
+      });
+    };
+    start(port);
   });
 }
 

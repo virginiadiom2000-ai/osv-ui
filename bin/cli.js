@@ -173,8 +173,8 @@ if (isJson) {
     process.exit(1);
   }
 } else {
-  createServer(payload, PORT, version).then(async () => {
-    const url = `http://localhost:${PORT}`;
+  createServer(payload, PORT, version).then(async ({ port }) => {
+    const url = `http://localhost:${port}`;
     log(`  ${green('✔')} Dashboard ready → ${cyan(url)}`);
     log(dim(`  ${totalPkgs} packages · ${totalVulns} vulnerabilities · ${services.length} service(s)`));
     if (totalCrit > 0) log(red(`  ⚠ ${totalCrit} CRITICAL vulnerability${totalCrit > 1 ? 'ies' : ''} found!`));
