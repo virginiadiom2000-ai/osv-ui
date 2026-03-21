@@ -2,7 +2,6 @@
 
 > MCP server for [osv-ui](https://github.com/toan203/osv-ui) — scan projects for CVEs inside Claude Desktop, Cursor, and more.
 
-![OSV-UI Dashboard Summary](../../docs/mcp/dashboard.png)
 
 ## Why this exists
 
