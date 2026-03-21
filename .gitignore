@@ -6,3 +6,4 @@ test-fixture/
 npm-debug.log*
 .env
 .backlog.md
+.note.md
