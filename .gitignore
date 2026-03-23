@@ -7,3 +7,5 @@ npm-debug.log*
 .env
 .backlog.md
 .note.md
+PROJECT_MEMORY.md
+osv-report.json

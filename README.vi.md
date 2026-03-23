@@ -162,6 +162,15 @@ Cập nhật **hàng ngày**. Không cần tài khoản. Không giới hạn lư
 
 ---
 
+## Hoạt động tuyệt vời cùng osv-scanner (Google)
+
+osv-ui và [osv-scanner](https://github.com/google/osv-scanner) sử dụng cùng một nguồn dữ liệu OSV.dev. osv-ui bổ sung lớp hiển thị trực quan mà osv-scanner còn thiếu:
+- Dashboard trình duyệt thay vì đầu ra terminal
+- Thanh sidebar cho nhiều dịch vụ
+- Hướng dẫn nâng cấp kiểu Dependabot với các lệnh copy nhanh
+
+---
+
 ## So sánh với các giải pháp khác
 
 | | **osv-ui** | `npm audit` | Snyk | Dependabot |

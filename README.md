@@ -185,6 +185,16 @@ Updated **daily**. No account. No rate limit. No vendor lock-in.
 
 ---
 
+## Works great alongside osv-scanner (Google)
+
+osv-ui and [osv-scanner](https://github.com/google/osv-scanner) use the same 
+OSV.dev data source. osv-ui adds the visual layer that osv-scanner lacks:
+- Browser dashboard instead of terminal output
+- Multi-service sidebar
+- Dependabot-style upgrade guide with copy commands
+
+---
+
 ## vs alternatives
 
 | | **osv-ui** | `npm audit` | Snyk | Dependabot |
