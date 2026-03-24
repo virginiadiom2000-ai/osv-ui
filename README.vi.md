@@ -4,7 +4,7 @@
 
 # osv-ui
 
-**Một Dashboard CVE đẹp mắt, không cần cấu hình cho các dự án npm, Python, Go và Rust.**  
+**Một Dashboard CVE đẹp mắt, không cần cấu hình cho các dự án npm, Python, Go, Rust, Java, PHP và Ruby.**  
 Một câu lệnh. Không cần đăng ký. Không cần API key. **Chạy 100% locally — code của bạn không bao giờ rời khỏi máy.**
 
 [![npm version](https://img.shields.io/npm/v/osv-ui?color=red&label=npm)](https://www.npmjs.com/package/osv-ui)
@@ -47,7 +47,7 @@ npx osv-ui
 - **Không cấu hình**: Không cần cài đặt phức tạp, không cần tạo tài khoản hay API Key.
 - **Quyền riêng tư là trên hết**: Việc phân tích được thực hiện 100% trên máy của bạn.
 - **Nhanh & Trực quan**: Hiển thị điểm rủi ro, biểu đồ lỗ hổng và hướng dẫn nâng cấp chi tiết trong vài giây.
-- **Đa nền tảng**: Hỗ trợ sẵn cho hệ sinh thái Node.js (npm), Python, Go và Rust.
+- **Đa nền tảng**: Hỗ trợ sẵn cho hệ sinh thái Node.js (npm), Python, Go, Rust, Java, PHP và Ruby.
 
 ---
 
@@ -55,7 +55,7 @@ npx osv-ui
 
 | | |
 |---|---|
-| 🟨 **npm** + 🐍 **Python** + 🔵 **Go** + 🦀 **Rust** | Quét `package-lock.json`, `Pipfile.lock`, `poetry.lock`, `requirements.txt`, `go.sum`, `Cargo.lock` |
+| 🌐 **Đa hệ sinh thái** | Quét `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `Pipfile.lock`, `poetry.lock`, `requirements.txt`, `go.sum`, `Cargo.lock`, `pom.xml`, `composer.lock`, `Gemfile.lock` |
 | 📡 **Dữ liệu CVE trực tiếp** | Cung cấp bởi [OSV.dev](https://osv.dev) — cập nhật hàng ngày từ NVD, GitHub Advisory, PyPI Advisory. **Không cần API key.** |
 | 🏢 **Đa dịch vụ (Multi-service)** | Quét toàn bộ monorepo chỉ với một câu lệnh — frontend, backend, workers, ML services |
 | 💊 **Hướng dẫn Fix** | Bảng nâng cấp kiểu Dependabot: phiên bản hiện tại → phiên bản an toàn + lệnh copy 1-click |
@@ -122,10 +122,13 @@ curl -s http://localhost:2003/api/data | jq '.[0].vulns'
 
 | Hệ sinh thái | Các file |
 |-----------|-------|
-| **npm** | `package-lock.json` (lockfileVersion 1, 2, 3) |
-| **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` |
+| **npm / JS** | `package-lock.json` · `pnpm-lock.yaml` · `yarn.lock` |
+| **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` · `uv.lock` |
 | **Go** | `go.sum` |
 | **Rust** | `Cargo.lock` |
+| **Java** | `pom.xml` (Maven) |
+| **PHP** | `composer.json` · `composer.lock` |
+| **Ruby** | `Gemfile` · `Gemfile.lock` |
 
 Nhiều hệ sinh thái khác đang được phát triển — xem [Lộ trình](#lộ-trình).
 
@@ -230,9 +233,11 @@ Mọi đóng góp đều được trân trọng. Nếu bạn muốn phát triể
 
 - [x] **Hỗ trợ Go** — parse `go.sum` / `go.mod`
 - [x] **Hỗ trợ Rust** — parse `Cargo.lock`
+- [x] **Hỗ trợ Java / Maven** — parse `pom.xml`
+- [x] **Hỗ trợ PHP / Composer** — parse `composer.lock`
+- [x] **Hỗ trợ Ruby / Bundler** — parse `Gemfile.lock`
 - [x] **Xuất báo cáo** — lưu dưới dạng HTML / JSON
 - [x] **Dark mode** — giao diện Dashboard dịu mắt
-- [ ] **Java / Maven** — parse `pom.xml`
 - [ ] **GitHub Actions** — đăng comment so sánh CVE trên PRs
 - [ ] **Xuất SBOM** — định dạng CycloneDX / SPDX
 - [ ] **Chế độ theo dõi (Watch mode)** — tự động quét lại khi file manifest thay đổi

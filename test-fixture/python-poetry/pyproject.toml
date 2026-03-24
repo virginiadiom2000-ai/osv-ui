@@ -1,0 +1,11 @@
+[tool.poetry]
+name = "python-poetry"
+version = "0.1.0"
+description = ""
+authors = ["Toan Nguyen"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "2.2.0"
+jinja2 = "2.11.2"
+ansible = "2.9.0"

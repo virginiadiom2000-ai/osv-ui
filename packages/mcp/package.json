@@ -20,7 +20,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "open": "^9.1.0",
-    "osv-ui": "^1.1.5"
+    "osv-ui": "^1.1.6"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -1,0 +1,9 @@
+[package]
+name = "rust-test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4.19"
+rust-ini = "0.17.0"
+rand = "0.7.3"

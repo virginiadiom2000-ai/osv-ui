@@ -19,6 +19,9 @@ const ECOSYSTEM_MAP = {
   PyPI: 'PyPI',
   Go: 'Go',
   'crates.io': 'crates.io',
+  Maven: 'Maven',
+  Packagist: 'Packagist',
+  RubyGems: 'RubyGems',
 };
 
 /**
@@ -173,6 +176,12 @@ function parseOsvVuln(v, pkg) {
         : `go get ${pkg.name}@v${fixedIn.replace(/^v/, '')}`; // go get works for transitive too
     } else if (pkg.ecosystem === 'crates.io') {
       fixCommand = `cargo update -p ${pkg.name} --precise ${fixedIn}`;
+    } else if (pkg.ecosystem === 'Maven') {
+      fixCommand = `mvn dependency:tree (check pom.xml for ${pkg.name})`;
+    } else if (pkg.ecosystem === 'Packagist') {
+      fixCommand = `composer require ${pkg.name}:${fixedIn}`;
+    } else if (pkg.ecosystem === 'RubyGems') {
+      fixCommand = `bundle update ${pkg.name}`;
     }
   }
 

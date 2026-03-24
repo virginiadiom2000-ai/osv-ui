@@ -1,0 +1,15 @@
+express@^4.17.1:
+  version "4.17.1"
+  resolved "https://registry.npmjs.org/express/-/express-4.17.1.tgz"
+
+lodash@^4.17.20:
+  version "4.17.20"
+  resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz"
+
+mime@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/mime/-/mime-1.4.0.tgz"
+
+validator@^13.6.0:
+  version "13.6.0"
+  resolved "https://registry.npmjs.org/validator/-/validator-13.6.0.tgz"

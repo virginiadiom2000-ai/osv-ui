@@ -4,7 +4,7 @@
 
 # osv-ui
 
-**一款美观、零配置的 npm、Python、Go 和 Rust 项目 CVE 仪表板。**  
+**一款美观、零配置的 npm、Python、Go、Rust、Java、PHP 和 Ruby 项目 CVE 仪表板。**  
 一条命令。无需注册。无需 API 密钥。**100% 本地运行 — 您的代码绝不会离开您的机器。**
 
 [🇻🇳 Tiếng Việt](README.vi.md) · [🇺🇸 English](README.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md)
@@ -47,7 +47,7 @@ npx osv-ui
 - **零配置**：无需安装、无需创建帐户或 API Key。
 - **隐私至上**：分析过程 100% 在您的本地机器上完成。
 - **直观且快速**：几秒钟内即可显示风险评分、漏洞图表和详细的升级指南（安全版本）。
-- **支持多平台**：原生支持 Node.js (npm)、Python、Go 和 Rust。
+- **支持多平台**：原生支持 Node.js (npm)、Python、Go、Rust、Java、PHP 和 Ruby。
 
 ---
 
@@ -55,7 +55,7 @@ npx osv-ui
 
 | | |
 |---|---|
-| 🟨 **npm** + 🐍 **Python** + 🔵 **Go** + 🦀 **Rust** | 扫描 `package-lock.json`、`Pipfile.lock`、`poetry.lock`、`requirements.txt`、`go.sum`、`Cargo.lock` |
+| 🌐 **多生态支持** | 扫描 `package-lock.json`、`pnpm-lock.yaml`、`yarn.lock`、`Pipfile.lock`、`poetry.lock`、`requirements.txt`、`go.sum`、`Cargo.lock`、`pom.xml`、`composer.lock`、`Gemfile.lock` |
 | 📡 **实时 CVE 数据** | 由 [OSV.dev](https://osv.dev) 提供支持 — 每天从 NVD、GitHub Advisory、PyPI Advisory 更新。**无需 API 密钥。** |
 | 🏢 **多服务扫描** | 一条命令扫描整个 monorepo — 前端、后端、workers、ML 服务 |
 | 💊 **修复指南** | Dependabot 风格的升级表：当前版本 → 安全版本 + 一键复制命令 |
@@ -145,10 +145,13 @@ curl -s http://localhost:2003/api/data | jq '.[0].vulns'
 
 | 生态系统 | 文件 |
 |-----------|-------|
-| **npm** | `package-lock.json` (lockfileVersion 1, 2, 3) |
-| **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` |
+| **npm / JS** | `package-lock.json` · `pnpm-lock.yaml` · `yarn.lock` |
+| **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` · `uv.lock` |
 | **Go** | `go.sum` |
 | **Rust** | `Cargo.lock` |
+| **Java** | `pom.xml` (Maven) |
+| **PHP** | `composer.json` · `composer.lock` |
+| **Ruby** | `Gemfile` · `Gemfile.lock` |
 
 更多生态系统即将推出 — 请参阅 [路线图](#路线图)。
 
@@ -253,9 +256,11 @@ audit:
 
 - [x] **Go 支持** — 解析 `go.sum` / `go.mod`
 - [x] **Rust 支持** — 解析 `Cargo.lock`
+- [x] **Java / Maven 支持** — 解析 `pom.xml`
+- [x] **PHP / Composer 支持** — 解析 `composer.lock`
+- [x] **Ruby / Bundler 支持** — 解析 `Gemfile.lock`
 - [x] **导出报告** — 保存为 HTML / JSON
 - [x] **深色模式** — 护眼的仪表板 UI
-- [ ] **Java / Maven** — 解析 `pom.xml`
 - [ ] **GitHub Actions** — 在 PR 上发布 CVE 差异评论
 - [ ] **SBOM 导出** — CycloneDX / SPDX 格式
 - [ ] **监听模式** — 清单文件更改时自动重新扫描

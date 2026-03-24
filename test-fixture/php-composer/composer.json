@@ -1,0 +1,8 @@
+{
+    "name": "osv-ui/test-php",
+    "require": {
+        "guzzlehttp/guzzle": "6.5.5",
+        "symfony/http-foundation": "5.4.0",
+        "laravel/framework": "8.75.0"
+    }
+}

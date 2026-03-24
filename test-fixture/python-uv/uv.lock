@@ -1,0 +1,22 @@
+version = 1
+requires-python = ">=3.9"
+
+[[package]]
+name = "requests"
+version = "2.25.1"
+
+[[package]]
+name = "django"
+version = "3.2.0"
+
+[[package]]
+name = "jinja2"
+version = "2.11.2"
+
+[[package]]
+name = "flask"
+version = "0.12.2"
+
+[[package]]
+name = "tensorflow"
+version = "2.4.0"

@@ -1,5 +1,6 @@
 import express from 'express';
 import http from 'http';
+import compression from 'compression';
 import { execSync } from 'child_process';
 
 function checkIfOsvUi(port) {
@@ -43,6 +44,7 @@ export function createServer(payload, port, version) {
     const start = async (currentPort) => {
       if (attempts++ > 15) return reject(new Error('Port search limit reached'));
       const app = express();
+      app.use(compression());
       app.use((_, res, next) => { res.setHeader('X-App', 'osv-ui'); next(); });
       app.get('/', (_, res) => { res.setHeader('Content-Type', 'text/html'); res.send(buildDashboard(payload, version)); });
       app.get('/api/data', (_, res) => res.json(payload));
@@ -114,6 +116,13 @@ export function buildDashboard({ services, scannedAt, noOsv }, version = '1.0.0'
   const globalRisk = services.reduce((s, r) => s + r.riskScore, 0);
   const avgRisk = services.length ? Math.round(globalRisk / services.length) : 0;
 
+  // Securely embed JSON data to prevent XSS and browser security flags
+  const safeJson = JSON.stringify({ services, scannedAt, noOsv })
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+
   // Build service nav
   const serviceNav = services.map((svc, i) => {
     const dot = svc.severity.critical > 0 ? 'var(--red)' : svc.vulns.length > 0 ? 'var(--orange)' : 'var(--green)';
@@ -122,6 +131,9 @@ export function buildDashboard({ services, scannedAt, noOsv }, version = '1.0.0'
       if (e === 'PyPI') return '🐍';
       if (e === 'Go') return '🔵';
       if (e === 'crates.io') return '🦀';
+      if (e === 'Maven') return '📦';
+      if (e === 'Packagist') return '🐘';
+      if (e === 'RubyGems') return '💎';
       return '📦';
     }).join('');
     return `<div class="nav-item ${i === 0 ? 'active' : ''}" onclick="showService(${i}, this)" data-svc="${i}">
@@ -190,6 +202,9 @@ export function buildDashboard({ services, scannedAt, noOsv }, version = '1.0.0'
   --eco-pypi-bg: #f0f9ff; --eco-pypi-fg: #1e4e79; --eco-pypi-border: #bee3f8;
   --eco-go-bg: #ebf8ff; --eco-go-fg: #2c5282; --eco-go-border: #90cdf4;
   --eco-rust-bg: #fff5f5; --eco-rust-fg: #9b2c2c; --eco-rust-border: #feb2b2;
+  --eco-java-bg: #fffaf0; --eco-java-fg: #9c4221; --eco-java-border: #fbd38d;
+  --eco-php-bg: #faf5ff; --eco-php-fg: #553c9a; --eco-php-border: #e9d8fd;
+  --eco-ruby-bg: #fff5f5; --eco-ruby-fg: #9b2c2c; --eco-ruby-border: #feb2b2;
 }
 
 html.dark {
@@ -222,6 +237,9 @@ html.dark {
   --eco-pypi-bg: #2a4365; --eco-pypi-fg: #bee3f8; --eco-pypi-border: #3182ce;
   --eco-go-bg: #2b6cb0; --eco-go-fg: #ebf8ff; --eco-go-border: #4299e1;
   --eco-rust-bg: #742a2a; --eco-rust-fg: #fed7d7; --eco-rust-border: #e53e3e;
+  --eco-java-bg: #7b341e; --eco-java-fg: #fffff0; --eco-java-border: #9c4221;
+  --eco-php-bg: #44337a; --eco-php-fg: #e9d8fd; --eco-php-border: #553c9a;
+  --eco-ruby-bg: #742a2a; --eco-ruby-fg: #fed7d7; --eco-ruby-border: #e53e3e;
 }
 
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;font-size:13px}
@@ -385,7 +403,7 @@ tr.clickable:hover td{background:var(--table-row-border)}
 </div>
 
 <script>
-const ALL_DATA = ${JSON.stringify({ services, scannedAt, noOsv })};
+const ALL_DATA = ${safeJson};
 
 function toggleTheme() {
   const isDark = document.documentElement.classList.contains('dark');
@@ -563,11 +581,14 @@ function buildServicePanel(svc, i) {
 
   // Ecosystem badges
   const ecoBadges = svc.ecosystems.map(e => {
-    let [bg, fg, border, label] = ['var(--bg)', 'var(--text)', 'var(--border)', e];
+    let [bg, fg, border, label] = ['var(--bg)', 'var(--text)', 'var(--border)', e || 'Unknown'];
     if (e === 'npm') { bg = 'var(--eco-npm-bg)'; fg = 'var(--eco-npm-fg)'; border = 'var(--eco-npm-border)'; label = '🟨 npm'; }
     else if (e === 'PyPI') { bg = 'var(--eco-pypi-bg)'; fg = 'var(--eco-pypi-fg)'; border = 'var(--eco-pypi-border)'; label = '🐍 Python'; }
     else if (e === 'Go') { bg = 'var(--eco-go-bg)'; fg = 'var(--eco-go-fg)'; border = 'var(--eco-go-border)'; label = '🔵 Go'; }
     else if (e === 'crates.io') { bg = 'var(--eco-rust-bg)'; fg = 'var(--eco-rust-fg)'; border = 'var(--eco-rust-border)'; label = '🦀 Rust'; }
+    else if (e === 'Maven') { bg = 'var(--eco-java-bg)'; fg = 'var(--eco-java-fg)'; border = 'var(--eco-java-border)'; label = '📦 Java'; }
+    else if (e === 'Packagist') { bg = 'var(--eco-php-bg)'; fg = 'var(--eco-php-fg)'; border = 'var(--eco-php-border)'; label = '🐘 PHP'; }
+    else if (e === 'RubyGems') { bg = 'var(--eco-ruby-bg)'; fg = 'var(--eco-ruby-fg)'; border = 'var(--eco-ruby-border)'; label = '💎 Ruby'; }
     return `<span class="eco-badge" style="background:${bg};color:${fg};border-color:${border}">${label}</span>`;
   }).join('');
 
@@ -618,6 +639,11 @@ function buildServicePanel(svc, i) {
       <td colspan="6">
         <div class="detail-content">
           ${v.details ? `<div style="margin-bottom:8px;line-height:1.5">${esc(v.details.slice(0, 400))}${v.details.length > 400 ? '…' : ''}</div>` : ''}
+          ${!v.isDirect ? `<div style="margin-top:8px;padding:8px;background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:6px;color:var(--warn-c);font-size:11px;line-height:1.4">
+            💡 <strong>Suggestion:</strong> This is a <strong>transitive dependency</strong>. To resolve this, try upgrading your top-level (direct) dependencies that depend on this package. 
+            ${v.ecosystem === 'npm' ? 'Run <code>npm audit fix</code> to attempt automatic resolution.' : ''}
+            ${v.ecosystem === 'PyPI' ? 'Check your <code>requirements.txt</code> or <code>pyproject.toml</code> for updates to parent packages.' : ''}
+          </div>` : ''}
           ${fixSection}
           <div class="detail-grid" style="margin-top:8px">
             ${v.cvssScore ? `<div class="detail-item"><div class="label">CVSS Score</div><div class="val"><strong>${v.cvssScore.toFixed(1)}</strong> / 10</div></div>` : ''}
@@ -680,8 +706,20 @@ function buildServicePanel(svc, i) {
       <td><a href="${esc(p.registry)}" target="_blank" rel="noopener">${esc(p.name)}</a></td>
       <td><code>${esc(p.version)}</code></td>
       <td><span class="pkg-tag" style="${p.dev ? 'background:var(--tag-dev-bg);color:var(--tag-dev-c)' : 'background:var(--tag-prod-bg);color:var(--tag-prod-c)'}">${p.dev ? 'dev' : 'prod'}</span></td>
-      <td>${esc(p.ecosystem)}</td>
-      ${p.isDirect !== undefined ? `<td>${p.isDirect ? '✓' : ''}</td>` : ''}
+      <td>
+        ${(() => {
+    const e = p.ecosystem;
+    if (e === 'npm') return '🟨 npm';
+    if (e === 'PyPI') return '🐍 Python';
+    if (e === 'Go') return '🔵 Go';
+    if (e === 'crates.io') return '🦀 Rust';
+    if (e === 'Maven') return '📦 Java';
+    if (e === 'Packagist') return '🐘 PHP';
+    if (e === 'RubyGems') return '💎 Ruby';
+    return e;
+  })()}
+      </td>
+      ${p.isDirect !== undefined ? `<td>${p.isDirect ? '<span class="pkg-tag" style="background:var(--tag-direct-bg);color:var(--tag-direct-c)">direct</span>' : '<span class="pkg-tag" style="background:var(--tag-trans-bg);color:var(--tag-trans-c)">transitive</span>'}</td>` : '<td>—</td>'}
     </tr>`).join('');
 
   // Severity filter buttons

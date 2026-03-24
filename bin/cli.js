@@ -60,10 +60,13 @@ if (showHelp) {
   log(cyan('    -h, --help        ') + dim('show this help message'));
   log('');
   log('  Supported manifests:');
-  log(dim('    npm:    package-lock.json'));
-  log(dim('    Python: requirements.txt · Pipfile.lock · poetry.lock · pyproject.toml'));
-  log(dim('    Go:     go.sum'));
-  log(dim('    Cargo:  Cargo.lock'));
+  log(dim('    JavaScript: package-lock.json · pnpm-lock.yaml · yarn.lock'));
+  log(dim('    Python:     uv.lock · poetry.lock · Pipfile.lock · requirements.txt'));
+  log(dim('    Go:         go.sum'));
+  log(dim('    Rust:       Cargo.lock'));
+  log(dim('    Java:       pom.xml'));
+  log(dim('    PHP:        composer.lock'));
+  log(dim('    Ruby:       Gemfile.lock'));
   log('');
   process.exit(0);
 }
@@ -71,7 +74,11 @@ if (showHelp) {
 // ── Discover services ────────────────────────────────────────────────────────
 function discoverDirs(root) {
   const hits = [];
-  const MANIFEST = ['package-lock.json', 'requirements.txt', 'Pipfile.lock', 'poetry.lock', 'pyproject.toml', 'go.sum', 'Cargo.lock'];
+  const MANIFEST = [
+    'package-lock.json', 'pnpm-lock.yaml', 'yarn.lock',
+    'uv.lock', 'poetry.lock', 'Pipfile.lock', 'requirements.txt', 'pyproject.toml',
+    'go.sum', 'Cargo.lock', 'pom.xml', 'composer.lock', 'Gemfile.lock'
+  ];
   const IGNORE = ['node_modules', '.git', '__pycache__', '.venv', 'venv', 'dist', '.next', 'build', 'target'];
   function walk(dir, depth = 0) {
     if (depth > 3) return;
@@ -104,7 +111,11 @@ if (discover) {
 }
 
 // ── Validate dirs ────────────────────────────────────────────────────────────
-const MANIFESTS = ['package-lock.json', 'requirements.txt', 'Pipfile.lock', 'poetry.lock', 'pyproject.toml', 'go.sum', 'Cargo.lock'];
+const MANIFESTS = [
+  'package-lock.json', 'pnpm-lock.yaml', 'yarn.lock',
+  'uv.lock', 'poetry.lock', 'Pipfile.lock', 'requirements.txt', 'pyproject.toml',
+  'go.sum', 'Cargo.lock', 'pom.xml', 'composer.lock', 'Gemfile.lock'
+];
 serviceDirs = serviceDirs.filter(dir => {
   const ok = existsSync(dir) && MANIFESTS.some(m => existsSync(join(dir, m)));
   if (!ok) log(yellow(`  ⚠ Skipping ${dir} — no supported manifest found`));
@@ -115,10 +126,13 @@ if (serviceDirs.length === 0) {
   log(red('  ✖ No valid service directories found.'));
   log('');
   log('  Supported manifests:');
-  log(dim('    npm:    package-lock.json'));
-  log(dim('    Python: requirements.txt · Pipfile.lock · poetry.lock · pyproject.toml'));
-  log(dim('    Go:     go.sum'));
-  log(dim('    Rust:   Cargo.lock'));
+  log(dim('    JavaScript: package-lock.json · pnpm-lock.yaml · yarn.lock'));
+  log(dim('    Python:     uv.lock · poetry.lock · Pipfile.lock · requirements.txt'));
+  log(dim('    Go:         go.sum'));
+  log(dim('    Rust:       Cargo.lock'));
+  log(dim('    Java:       pom.xml'));
+  log(dim('    PHP:        composer.lock'));
+  log(dim('    Ruby:       Gemfile.lock'));
   log('');
   log('  Usage:');
   log(cyan('    npx osv-ui                          ') + dim('# current dir'));

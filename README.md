@@ -4,7 +4,7 @@
 
 # osv-ui
 
-**A beautiful, zero-config visual CVE dashboard for npm, Python, Go, and Rust projects.**  
+**A beautiful, zero-config visual CVE dashboard for npm, Python, Go, Rust, Java, PHP, and Ruby projects.**  
 One command. No signup. No API key. **Runs 100% locally — your code never leaves your machine.**
 
 [![npm version](https://img.shields.io/npm/v/osv-ui?color=red&label=npm)](https://www.npmjs.com/package/osv-ui)
@@ -48,7 +48,7 @@ npx osv-ui
 - **Zero-config**: No complex setup, no signup, no API key required.
 - **Privacy First**: Analysis is done 100% on your machine.
 - **Fast & Visual**: Real-time Risk Scores, vulnerability charts, and clear upgrade guides in seconds.
-- **Multi-platform**: Native support for Node.js (npm), Python, Go, and Rust.
+- **Multi-platform**: Native support for Node.js (npm), Python, Go, Rust, Java, PHP, and Ruby.
 
 ---
 
@@ -56,7 +56,7 @@ npx osv-ui
 
 | | |
 |---|---|
-| 🟨 **npm** + 🐍 **Python** + 🔵 **Go** + 🦀 **Rust** | Scans `package-lock.json`, `Pipfile.lock`, `poetry.lock`, `requirements.txt`, `go.sum`, `Cargo.lock` |
+| 🌐 **Multi-Ecosystem** | Scans `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `Pipfile.lock`, `poetry.lock`, `requirements.txt`, `go.sum`, `Cargo.lock`, `pom.xml`, `composer.lock`, `Gemfile.lock` |
 | 📡 **Live CVE data** | Powered by [OSV.dev](https://osv.dev) — updated daily from NVD, GitHub Advisory, PyPI Advisory. **No API key.** |
 | 🏢 **Multi-service** | Scan your entire monorepo in one command — frontend, backend, workers, ML services |
 | 💊 **Fix guide** | Dependabot-style upgrade table: current version → safe version + one-click copy command |
@@ -145,10 +145,13 @@ curl -s http://localhost:2003/api/data | jq '.[0].vulns'
 
 | Ecosystem | Files |
 |-----------|-------|
-| **npm** | `package-lock.json` (lockfileVersion 1, 2, 3) |
-| **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` |
+| **npm / JS** | `package-lock.json` · `pnpm-lock.yaml` · `yarn.lock` |
+| **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` · `uv.lock` |
 | **Go** | `go.sum` |
 | **Rust** | `Cargo.lock` |
+| **Java** | `pom.xml` (Maven) |
+| **PHP** | `composer.json` · `composer.lock` |
+| **Ruby** | `Gemfile` · `Gemfile.lock` |
 
 More ecosystems coming — see [Roadmap](#roadmap).
 
@@ -254,9 +257,11 @@ All contributions are welcome. If you want to work on something, open an issue f
 
 - [x] **Go support** — parse `go.sum` / `go.mod`
 - [x] **Rust support** — parse `Cargo.lock`
+- [x] **Java / Maven** — parse `pom.xml`
+- [x] **PHP / Composer** — parse `composer.lock`
+- [x] **Ruby / Bundler** — parse `Gemfile.lock`
 - [x] **Export report** — save as HTML / JSON
 - [x] **Dark mode** — eye-friendly dashboard UI
-- [ ] **Java / Maven** — parse `pom.xml`
 - [ ] **GitHub Actions** — post a CVE diff comment on PRs
 - [ ] **SBOM export** — CycloneDX / SPDX format
 - [ ] **Watch mode** — re-scan on manifest file changes

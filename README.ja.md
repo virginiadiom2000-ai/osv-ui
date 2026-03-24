@@ -4,7 +4,7 @@
 
 # osv-ui
 
-**npm、Python、Go、および Rust プロジェクト向けの、美しく構成不要な CVE ダッシュボード。**  
+**npm、Python、Go、Rust、Java、PHP、および Ruby プロジェクト向けの、美しく構成不要な CVE ダッシュボード。**  
 1 つのコマンド。登録不要。API キー不要。**100% ローカルで実行 — コードがマシンから離れることはありません。**
 
 [🇻🇳 Tiếng Việt](README.vi.md) · [🇺🇸 English](README.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md)
@@ -47,7 +47,7 @@ npx osv-ui
 - **ゼロ構成**: インストール不要、アカウント作成や API キーも不要です。
 - **プライバシー第一**: 分析は 100% ローカルマシン上で行われます。
 - **直感的かつ高速**: わずか数秒でリスクスコア、脆弱性チャート、詳細なアップグレードガイド（安全なバージョン）を表示します。
-- **マルチプラットフォーム**: Node.js (npm)、Python、Go、および Rust をネイティブにサポートします。
+- **マルチプラットフォーム**: Node.js (npm)、Python、Go、Rust、Java、PHP、および Ruby をネイティブにサポートします。
 
 ---
 
@@ -55,7 +55,7 @@ npx osv-ui
 
 | | |
 |---|---|
-| 🟨 **npm** + 🐍 **Python** + 🔵 **Go** + 🦀 **Rust** | `package-lock.json`、`Pipfile.lock`、`poetry.lock`、`requirements.txt`、`go.sum`、`Cargo.lock` をスキャン |
+| 🌐 **マルチエコシステム** | `package-lock.json`、`pnpm-lock.yaml`、`yarn.lock`、`Pipfile.lock`、`poetry.lock`、`requirements.txt`、`go.sum`、`Cargo.lock`、`pom.xml`、`composer.lock`、`Gemfile.lock` をスキャン |
 | 📡 **ライブ CVE データ** | [OSV.dev](https://osv.dev) を使用 — NVD、GitHub Advisory、PyPI Advisory から毎日更新。**API キー不要。** |
 | 🏢 **マルチサービス** | 1 つのコマンドでモノレポ全体をスキャン — フロントエンド、バックエンド、ワーカー、ML サービス |
 | 💊 **修正ガイド** | Dependabot スタイルのアップグレード表：現在のバージョン → 安全なバージョン + ワンクリックコピーコマンド |
@@ -144,10 +144,13 @@ curl -s http://localhost:2003/api/data | jq '.[0].vulns'
 
 | エコシステム | ファイル |
 |-----------|-------|
-| **npm** | `package-lock.json` (lockfileVersion 1, 2, 3) |
-| **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` |
+| **npm / JS** | `package-lock.json` · `pnpm-lock.yaml` · `yarn.lock` |
+| **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` · `uv.lock` |
 | **Go** | `go.sum` |
 | **Rust** | `Cargo.lock` |
+| **Java** | `pom.xml` (Maven) |
+| **PHP** | `composer.json` · `composer.lock` |
+| **Ruby** | `Gemfile` · `Gemfile.lock` |
 
 さらに多くのエコシステムを開発中 — [ロードマップ](#ロードマップ)をご覧ください。
 
@@ -252,9 +255,11 @@ audit:
 
 - [x] **Go サポート** — `go.sum` / `go.mod` の解析
 - [x] **Rust サポート** — `Cargo.lock` の解析
+- [x] **Java / Maven サポート** — `pom.xml` の解析
+- [x] **PHP / Composer サポート** — `composer.lock` の解析
+- [x] **Ruby / Bundler サポート** — `Gemfile.lock` の解析
 - [x] **レポートのエクスポート** — HTML / JSON として保存
 - [x] **ダークモード** — 目に優しいダッシュボード UI
-- [ ] **Java / Maven** — `pom.xml` の解析
 - [ ] **GitHub Actions** — PR に CVE 差分コメントを投稿
 - [ ] **SBOM エクスポート** — CycloneDX / SPDX 形式
 - [ ] **ウォッチモード** — マニフェスト変更時に自動再スキャン

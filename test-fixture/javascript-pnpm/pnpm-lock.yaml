@@ -1,0 +1,15 @@
+lockfileVersion: '6.0'
+dependencies:
+  express: 4.17.1
+  lodash: 4.17.20
+  mime: 1.4.0
+  validator: 13.6.0
+packages:
+  /express@4.17.1:
+    resolution: {integrity: sha512-...}
+  /lodash@4.17.20:
+    resolution: {integrity: sha512-...}
+  /mime@1.4.0:
+    resolution: {integrity: sha512-...}
+  /validator@13.6.0:
+    resolution: {integrity: sha512-...}

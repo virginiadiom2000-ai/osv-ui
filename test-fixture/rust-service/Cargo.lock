@@ -1,0 +1,11 @@
+[[package]]
+name = "tokio"
+version = "1.0.1"
+
+[[package]]
+name = "serde_json"
+version = "1.0.60"
+
+[[package]]
+name = "openssl"
+version = "0.10.30"

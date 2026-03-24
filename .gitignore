@@ -1,6 +1,6 @@
 node_modules/
 dist/
-test-fixture/
+# test-fixture/ (Included for v1.1.6 examples)
 .DS_Store
 *.log
 npm-debug.log*
