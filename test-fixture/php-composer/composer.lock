@@ -1,7 +1,0 @@
-{
-    "packages": [
-        {"name": "guzzlehttp/guzzle", "version": "6.5.3"},
-        {"name": "laravel/framework", "version": "8.0.0"},
-        {"name": "symfony/http-foundation", "version": "5.2.0"}
-    ]
-}
